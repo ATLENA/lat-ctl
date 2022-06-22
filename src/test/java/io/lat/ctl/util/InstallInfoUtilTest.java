@@ -1,15 +1,5 @@
 package io.lat.ctl.util;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-
 import io.lat.ctl.common.vo.Server;
 import io.lat.ctl.exception.LatException;
 import io.lat.ctl.resolver.XpathVariable;
@@ -17,6 +7,15 @@ import io.lat.ctl.util.testtools.FileBasedTestCase;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Test InstallInfoUtil Class
@@ -26,7 +25,8 @@ import org.w3c.dom.Element;
  */
 public class InstallInfoUtilTest extends FileBasedTestCase {
 
-	private String lenaHome;
+	private String latHome;
+	private String latManagementHome;
 	final File top = getLocalTestDirectory();
 
 	public InstallInfoUtilTest(String name) {
@@ -40,8 +40,10 @@ public class InstallInfoUtilTest extends FileBasedTestCase {
 	@Override
 	protected void setUp() throws Exception {
 		top.mkdirs();
-		lenaHome = top.getParent();
-		System.setProperty("lena.home", lenaHome);
+		latHome = top.getParent();
+		latManagementHome = latHome + "/lat";
+		System.setProperty("lat.home", latHome);
+		System.setProperty("lat.management.home", latManagementHome);
 	}
 
 	@Override
@@ -54,6 +56,7 @@ public class InstallInfoUtilTest extends FileBasedTestCase {
 	public void testAddInstallInfo() {
 
 		// create temp install info xml
+		System.out.println("InstallInfoFilePath == "+InstallInfoUtil.getInstallInfoFilePath());
 		File installInfoFile = new File(InstallInfoUtil.getInstallInfoFilePath());
 		String defaultXml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
 				+ "<install>\n"
@@ -113,7 +116,9 @@ public class InstallInfoUtilTest extends FileBasedTestCase {
 	@Test
 	public void testGetInstallInfoFilePath() throws IOException {
 		File temp = new File(InstallInfoUtil.getInstallInfoFilePath());
-		assertTrue(temp.getCanonicalPath().startsWith(lenaHome));
+		System.out.println("latHome경로 = "+latHome);
+		System.out.println("CanonicalPath = "+temp.getCanonicalPath());
+		assertTrue(temp.getCanonicalPath().startsWith(latHome));
 
 	}
 

@@ -82,6 +82,7 @@
 				<configuration>
 					<systemPropertyVariables>
 						<lat.home>${project.build.directory}/../test/io/</lat.home>
+                        <lat.management.home>${project.build.directory}/../test/io/lat/</lat.management.home>
 						<hostname>hostname_unit_test</hostname>
 						<run_user>${user.name}</run_user>
 						<buildDirectory>${project.build.directory}</buildDirectory>

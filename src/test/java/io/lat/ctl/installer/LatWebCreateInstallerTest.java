@@ -39,7 +39,7 @@ public class LatWebCreateInstallerTest {
 		String id = "server_id";
 		String port = "7080";
 		String user = "lenaw";
-		String engnPath = top.getAbsolutePath() + File.separator + "modules" + File.separator + "lena-web-pe";
+		//String engnPath = top.getAbsolutePath() + File.separator + "modules" + File.separator + "lena-web-pe";
 		String installPath = top.getAbsolutePath() + File.separator + "instances";
 		String logPath = installPath + File.separator + "logs";
 		String docPath = installPath + File.separator + "htdocs";
