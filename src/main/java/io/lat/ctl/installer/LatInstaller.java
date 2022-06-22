@@ -14,23 +14,18 @@
 
 package io.lat.ctl.installer;
 
+import io.lat.ctl.common.vo.Server;
+import io.lat.ctl.exception.LatException;
+import io.lat.ctl.type.InstallerCommandType;
+import io.lat.ctl.type.InstallerServerType;
+import io.lat.ctl.util.*;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
-import io.lat.ctl.common.vo.Server;
-import io.lat.ctl.exception.LatException;
-import io.lat.ctl.type.InstallerCommandType;
-import io.lat.ctl.type.InstallerServerType;
-import io.lat.ctl.util.EnvUtil;
-import io.lat.ctl.util.FileUtil;
-import io.lat.ctl.util.InstallConfigUtil;
-import io.lat.ctl.util.InstallInfoUtil;
-import io.lat.ctl.util.ReleaseInfoUtil;
-import io.lat.ctl.util.StringUtil;
 
 /**
  * Abstract class for server create installer
@@ -81,7 +76,7 @@ public abstract class LatInstaller implements Installer {
 	
 	/**
 	 * install-info.xml파일에서 서버 설치정보를 삭제한다. 
-	 * @param id 서버ID
+	 * @param serverId 서버ID
 	 */
 	protected void removeInstallInfo(String serverId) {
 		InstallInfoUtil.removeInstallInfo(serverId);
@@ -220,7 +215,7 @@ public abstract class LatInstaller implements Installer {
 	public static String getEngineVersion(String serverType) throws IOException {
 		String[] cmd;
 		if(System.getProperty("os.name").indexOf("Windows") > -1){
-			cmd=new String[]{"cmd","/c","ls -1r --sort=version "+FileUtil.getConcatPath(EnvUtil.getLatHome(),"engines", serverType)};
+			cmd=new String[]{"cmd","/c","dir -1r --sort=version "+FileUtil.getConcatPath(EnvUtil.getLatHome(),"engines", serverType)};
 		}else{
 			cmd=new String[]{"/bin/sh","-c","ls -1r --sort=version "+FileUtil.getConcatPath(EnvUtil.getLatHome(),"engines", serverType)};
 		}
@@ -230,7 +225,7 @@ public abstract class LatInstaller implements Installer {
 		String s=br.readLine();
 
 		if(s==null){
-			throw new LatException("Apache engine is not installed");
+			throw new LatException(serverType+" engine is not installed");
 		} else{
 			return s.substring(s.indexOf("-") + 1);
 		}

@@ -1,13 +1,11 @@
 package io.lat.ctl.util;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import io.lat.ctl.util.testtools.FileBasedTestCase;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.io.File;
+import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 
@@ -22,11 +20,13 @@ public class EnvUtilTest  {
 	private String logHome;
 	private String resultFormat;
 	private boolean rootUserAllowed;
+	private String latManagementHome;
 
 
 	@Before
 	public void setUp() throws Exception {
 		System.setProperty("lat.home", FileBasedTestCase.getTestDirectory().getCanonicalPath());
+		System.setProperty("lat.management.home", FileBasedTestCase.getTestDirectory().getCanonicalPath()+"/lat");
 		System.setProperty("hostname", "hostname_unit_test");
 		System.setProperty("run_user", System.getProperty("user.name"));
 
@@ -39,6 +39,7 @@ public class EnvUtilTest  {
 		logHome = System.getProperty("log.home", FileUtil.getConcatPath(latHome, "logs", "lat-installer"));
 		resultFormat = System.getProperty("result.format", "text");
 		rootUserAllowed = (System.getProperty("root_user.allowed", "false").equals("true"));
+		latManagementHome = System.getProperty("lat.management.home");
 	}
 
 
