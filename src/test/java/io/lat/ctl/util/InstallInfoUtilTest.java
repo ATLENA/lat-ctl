@@ -56,7 +56,6 @@ public class InstallInfoUtilTest extends FileBasedTestCase {
 	public void testAddInstallInfo() {
 
 		// create temp install info xml
-		System.out.println("InstallInfoFilePath == "+InstallInfoUtil.getInstallInfoFilePath());
 		File installInfoFile = new File(InstallInfoUtil.getInstallInfoFilePath());
 		String defaultXml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
 				+ "<install>\n"
@@ -116,8 +115,6 @@ public class InstallInfoUtilTest extends FileBasedTestCase {
 	@Test
 	public void testGetInstallInfoFilePath() throws IOException {
 		File temp = new File(InstallInfoUtil.getInstallInfoFilePath());
-		System.out.println("latHome경로 = "+latHome);
-		System.out.println("CanonicalPath = "+temp.getCanonicalPath());
 		assertTrue(temp.getCanonicalPath().startsWith(latHome));
 
 	}
