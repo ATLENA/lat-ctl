@@ -87,10 +87,10 @@ public class LatCometCreateInstaller extends LatInstaller {
 		if (!logHome.equals(FileUtil.getConcatPath(targetPath, "logs"))) {
 			FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "LOG_HOME", logHome + "/${SERVER_ID}");
 		}
-		PropertyUtil.setProperty(FileUtil.getConcatPath(targetPath, "session.conf"), "server.name", serverId);
-		PropertyUtil.setProperty(FileUtil.getConcatPath(targetPath, "session.conf"), "primary.port", servicePort);
-		PropertyUtil.setProperty(FileUtil.getConcatPath(targetPath, "session.conf"), "secondary.host", secondaryServerIp);
-		PropertyUtil.setProperty(FileUtil.getConcatPath(targetPath, "session.conf"), "secondary.port", secondaryServicePort);
+		PropertyUtil.setProperty(FileUtil.getConcatPath(targetPath, "conf", "session.conf"), "server.name", serverId);
+		PropertyUtil.setProperty(FileUtil.getConcatPath(targetPath, "conf", "session.conf"), "primary.port", servicePort);
+		PropertyUtil.setProperty(FileUtil.getConcatPath(targetPath, "conf", "session.conf"), "secondary.host", secondaryServerIp);
+		PropertyUtil.setProperty(FileUtil.getConcatPath(targetPath, "conf", "session.conf"), "secondary.port", secondaryServicePort);
 
 		// update install-info.xml
 		addInstallInfo(serverId, servicePort, targetPath);
@@ -122,7 +122,7 @@ public class LatCometCreateInstaller extends LatInstaller {
 		System.out.print("|: ");
 		commandMap.put("SECONDARY_SERVICE_PORT", scan.nextLine());
 		System.out.println("| 5. RUN_USER is user running Session Server                                          ");
-		System.out.println("|    ex : lena, wasadm                                                                ");
+		System.out.println("|    default : " + EnvUtil.getRunuser());
 		System.out.print("|: ");
 		commandMap.put("RUN_USER", scan.nextLine());
 		System.out.println("| 6. INSTALL_ROOT_PATH is is server root directory in filesystem.                     ");

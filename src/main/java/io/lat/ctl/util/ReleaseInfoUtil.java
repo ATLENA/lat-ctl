@@ -49,8 +49,8 @@ public class ReleaseInfoUtil {
 			split = LatApacheCreateInstaller.getEngineVersion("apache").split("\\.");
 		}else if(serverType.equals("tomcat")){
 			split = LatTomcatCreateInstaller.getEngineVersion("tomcat").split("\\.");
-		}else if(serverType.equals("zodiac")){
-			split = LatCometCreateInstaller.getEngineVersion("zodiac").split("\\.");
+		}else if(serverType.equals("comet")){
+			split = LatCometCreateInstaller.getEngineVersion("comet").split("\\.");
 		}
 
 		return FileUtil.getConcatPath(EnvUtil.getLatManagementHome(), "depot", "template", serverType, "base-"+serverType+"-"+split[0]+"."+split[1]);
