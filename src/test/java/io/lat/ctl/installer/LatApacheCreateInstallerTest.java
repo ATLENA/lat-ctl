@@ -17,7 +17,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class LatWebCreateInstallerTest {
+public class LatApacheCreateInstallerTest {
 
 	final File top = new File("test-installer/");
 
@@ -45,7 +45,7 @@ public class LatWebCreateInstallerTest {
 		String docPath = installPath + File.separator + "htdocs";
 
 		systemInMock.provideLines(id, port, user, installPath, logPath, docPath);
-		LatWebCreateInstaller installer = new LatWebCreateInstaller(InstallerCommandType.CREATE, InstallerServerType.APACHE);
+		LatApacheCreateInstaller installer = new LatApacheCreateInstaller(InstallerCommandType.CREATE, InstallerServerType.APACHE);
 		HashMap<String, String> result = installer.getServerInfoFromUser();
 
 		assertEquals(id, result.get("SERVER_ID"));

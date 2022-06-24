@@ -39,7 +39,9 @@ public class Main {
 		}
 
 		if (commandList.size() < 2) {
-			System.exit(1);
+			//System.exit(1);
+			CommandCtl.printHelpPage();
+			return;
 		}
 
 		String command = commandList.get(0); 
@@ -53,6 +55,11 @@ public class Main {
 		}else if(commandMapper.equals(CommandCtl.CONFIGURATOR)) {
 			Configurator configurator = ConfiguratorMapper.getConfigurator(commandList);
 			configurator.execute(args);
+		}else{
+			CommandCtl.printHelpPage();
+			if(command != null){
+				System.exit(1);
+			}
 		}
 	}
 }

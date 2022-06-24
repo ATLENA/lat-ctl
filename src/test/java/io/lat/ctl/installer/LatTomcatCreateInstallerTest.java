@@ -17,7 +17,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class LatWasCreateInstallerTest {
+public class LatTomcatCreateInstallerTest {
 
 	final File top = new File("test-installer/");
 
@@ -61,7 +61,7 @@ public class LatWasCreateInstallerTest {
 		String jvmRoute = "jvmRoute";
 
 		systemInMock.provideLines(id, port, user, installPath, ajpAddr, logPath, jvmRoute);
-		LatWasCreateInstaller installer = new LatWasCreateInstaller(InstallerCommandType.CREATE, InstallerServerType.TOMCAT);
+		LatTomcatCreateInstaller installer = new LatTomcatCreateInstaller(InstallerCommandType.CREATE, InstallerServerType.TOMCAT);
 		HashMap<String, String> result = installer.getServerInfoFromUser();
 
 		assertEquals(id, result.get("SERVER_ID"));

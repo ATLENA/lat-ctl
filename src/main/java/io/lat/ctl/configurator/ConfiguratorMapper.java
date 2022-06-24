@@ -1,5 +1,6 @@
 package io.lat.ctl.configurator;
 
+import io.lat.ctl.common.CommandCtl;
 import io.lat.ctl.type.ConfiguratorCommandType;
 import io.lat.ctl.type.InstallerServerType;
 
@@ -16,15 +17,20 @@ public class ConfiguratorMapper {
         installerServerType = InstallerServerType.getInstallServerType(serverType);
         configuratorCommandType = ConfiguratorCommandType.valueOf(command.toUpperCase().replace('-','_'));
 
+        if(installerServerType==null){
+            CommandCtl.printHelpPage();
+            System.exit(1);
+        }
+
         switch (installerServerType){
             case APACHE:
             case TOMCAT:
+            case COMET:
                 switch(configuratorCommandType){
                     case LIST_ENGINES:
-                    case MODIFY_ENGINE:
+                    case SWITCH_VERSION:
                     case DOWNLOAD_ENGINE:
                         return new LatEngineConfigurator(configuratorCommandType, installerServerType);
-
                 }
         }
 

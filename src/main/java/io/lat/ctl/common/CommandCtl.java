@@ -48,4 +48,32 @@ public class CommandCtl {
 
 		return result;
 	}
+
+	public static void printHelpPage(){
+		System.out.println(
+				"Usage: latctl.sh COMMAND [SERVER_TYPE]\n" +
+						"\n" +
+						"Enlena commands are:\n" +
+						"\n" +
+						"Instance Intallation Commands:\n" +
+						"\n" +
+						"\tcreate\t\tCreates a new instance\n" +
+						"\t\t\tex) latctl.sh create tomcat\n\n" +
+						"\tdelete\t\tRemoves an instance\n" +
+						"\t\t\tex) latctl.sh delete apache\n" +
+						"\n" +
+						"OSS Engine Administration Commands:\n" +
+						"\n" +
+						"\tlist-engines\t\tDisplays available OSS engine versions from LA:T engine repository.\n" +
+						"\t\t\t\tex) latctl.sh list-engines tomcat\n\n" +
+						"\tdownload-engine\t\tDownloads a new OSS engine version from LA:T engine repository.\n" +
+						"\t\t\t\tex) latctl.sh download-engine apache\n\n" +
+						"\tswitch-version\t\tSwitches OSS engine version of an instance\n" +
+						"\t\t\t\tex) latctl.sh switch-version tomcat\n\n"+
+				"Available LA:T OSS [SERVER_TYPE]s:\n\n" +
+						"\ttomcat\tWeb Application Server\n\n" +
+						"\tapache\tHTTP Server\n\n" +
+						"\tcomet\tLA:T Session server\n\n"
+		);
+	}
 }
