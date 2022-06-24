@@ -14,11 +14,11 @@
 
 package io.lat.ctl.installer;
 
-import java.util.List;
-
-import io.lat.ctl.installer.Installer;
+import io.lat.ctl.common.CommandCtl;
 import io.lat.ctl.type.InstallerCommandType;
 import io.lat.ctl.type.InstallerServerType;
+
+import java.util.List;
 
 /**
  * Mapper class for mapping Web Installer or WAS Insatller.
@@ -41,35 +41,33 @@ public class InstallerMapper {
 		installerServerType = InstallerServerType.getInstallServerType(serverType);
 		installerCommandType = InstallerCommandType.valueOf(command.toUpperCase());
 
+		if(installerServerType==null){
+			CommandCtl.printHelpPage();
+			System.exit(1);
+		}
+
 		switch (installerServerType) {
-		case APACHE:
-			switch (installerCommandType) {
-				case CREATE:
-					return new LatWebCreateInstaller(installerCommandType, installerServerType);
-				case CLONE:
-					return new LatWebServerCloneInstaller(installerCommandType, installerServerType);
-				case DELETE:
-					return new LatInstanceDeleteInstaller(installerCommandType, installerServerType);
-			}
-		case TOMCAT:
-			switch (installerCommandType) {
-				case CREATE:
-					return new LatWasCreateInstaller(installerCommandType, installerServerType);
-				case CLONE:
-					return new LatWasServerCloneInstaller(installerCommandType, installerServerType);
-				case DELETE:
-					return new LatInstanceDeleteInstaller(installerCommandType, installerServerType);
-			}
-		case ZODIAC:
-			switch (installerCommandType) {
-				case CREATE:
-					return new LatZodiacCreateInstaller(installerCommandType, installerServerType);
-				case CLONE:
-					// TODO
-					return null;
-				case DELETE:
-					return new LatInstanceDeleteInstaller(installerCommandType, installerServerType);
-			}
+			case APACHE:
+				switch (installerCommandType) {
+					case CREATE:
+						return new LatApacheCreateInstaller(installerCommandType, installerServerType);
+					case DELETE:
+						return new LatInstanceDeleteInstaller(installerCommandType, installerServerType);
+				}
+			case TOMCAT:
+				switch (installerCommandType) {
+					case CREATE:
+						return new LatTomcatCreateInstaller(installerCommandType, installerServerType);
+					case DELETE:
+						return new LatInstanceDeleteInstaller(installerCommandType, installerServerType);
+				}
+			case COMET:
+				switch (installerCommandType) {
+					case CREATE:
+						return new LatCometCreateInstaller(installerCommandType, installerServerType);
+					case DELETE:
+						return new LatInstanceDeleteInstaller(installerCommandType, installerServerType);
+				}
 		}
 		return null;
 	}

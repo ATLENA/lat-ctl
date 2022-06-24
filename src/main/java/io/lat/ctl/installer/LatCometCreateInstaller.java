@@ -14,15 +14,6 @@
 
 package io.lat.ctl.installer;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.Scanner;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import io.lat.ctl.exception.LatException;
 import io.lat.ctl.type.InstallerCommandType;
 import io.lat.ctl.type.InstallerServerType;
@@ -30,18 +21,24 @@ import io.lat.ctl.util.EnvUtil;
 import io.lat.ctl.util.FileUtil;
 import io.lat.ctl.util.PropertyUtil;
 import io.lat.ctl.util.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Scanner;
 
 /**
- * Installer that can create LA:T Zodiac
+ * Installer that can create LA:T Comet
  * 
  * @author ksseo
  *
  */
-public class LatZodiacCreateInstaller extends LatInstaller {
+public class LatCometCreateInstaller extends LatInstaller {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(LatZodiacCreateInstaller.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(LatCometCreateInstaller.class);
 
-	public LatZodiacCreateInstaller(InstallerCommandType installerCommandType, InstallerServerType installerServerType) {
+	public LatCometCreateInstaller(InstallerCommandType installerCommandType, InstallerServerType installerServerType) {
 		super(installerCommandType, installerServerType);
 		// TODO Auto-generated constructor stub
 	}
@@ -84,8 +81,8 @@ public class LatZodiacCreateInstaller extends LatInstaller {
 		FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "JAVA_HOME", EnvUtil.getUserJavahome());
 		FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "LAT_HOME", EnvUtil.getLatHome());
 		FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "SERVER_ID", serverId);
-		FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "ENGN_VERSION", getEngineVersion("zodiac"));
-		FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "ZODIAC_HOME", targetPath);
+		FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "ENGN_VERSION", getEngineVersion("comet"));
+		FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "COMET_HOME", targetPath);
 		FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "RUN_USER", runUser);
 		if (!logHome.equals(FileUtil.getConcatPath(targetPath, "logs"))) {
 			FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "LOG_HOME", logHome + "/${SERVER_ID}");
@@ -127,13 +124,13 @@ public class LatZodiacCreateInstaller extends LatInstaller {
 		System.out.println("| 5. RUN_USER is user running Session Server                                          ");
 		System.out.println("|    ex : lena, wasadm                                                                ");
 		System.out.print("|: ");
-		commandMap.put("RUN_USERT", scan.nextLine());
+		commandMap.put("RUN_USER", scan.nextLine());
 		System.out.println("| 6. INSTALL_ROOT_PATH is is server root directory in filesystem.                     ");
 		System.out.println(
 				"|    default : " + FileUtil.getConcatPath(EnvUtil.getLatHome(), "instances", getServerType()));
 		System.out.print("|: ");
 		commandMap.put("INSTALL_ROOT_PATH", scan.nextLine());
-		System.out.println("| 7. LOG_HOME is LENA Session Server's log directory in filesystem.                   ");
+		System.out.println("| 7. LOG_HOME is LA:T Session Server's log directory in filesystem.                   ");
 		System.out.println("|    If you don't want to use default log directory input your custom log home prefix.");
 		System.out.println("|    default : " + FileUtil.getConcatPath(EnvUtil.getLatHome(), "instances",
 				getServerType(), commandMap.get("SERVER_ID"), "logs"));

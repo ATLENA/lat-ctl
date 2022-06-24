@@ -25,8 +25,8 @@ public class LatEngineConfigurator extends LatConfigurator {
                 EngineUtil.listEngines(getServerType());
                 downloadEngine();
                 break;
-            case MODIFY_ENGINE:
-                modifyEngine();
+            case SWITCH_VERSION:
+                switchEngineVersion();
                 break;
         }
 
@@ -50,23 +50,23 @@ public class LatEngineConfigurator extends LatConfigurator {
         EngineUtil.downloadEngine(version, getServerType());
    }
 
-   private void modifyEngine() {
+   private void switchEngineVersion() {
 
         //TODO : stopped 상태인지 검증 로직 추가
         //TODO : SERVER_ID 도 INSTANCE_ID로 바꿔야 하는 것 아닌지?
         //TODO : 설치된 instance list 보여주는 로직 추가
         Scanner scan = new Scanner(System.in);
 
-        System.out.println("Enter SERVER_ID to modify engine");
+        System.out.println("Enter SERVER_ID to switch version");
         System.out.print(": ");
         String serverId = scan.nextLine();
 
-        System.out.println("Enter ENGN_VERSION to run");
+        System.out.println("Enter ENGN_VERSION to switch to");
         System.out.println("ex : 9.0.00.A.RELEASE");
         System.out.print(": ");
         String version = scan.nextLine();
 
-        EngineUtil.modifyEngine(serverId, version, getServerType());
+        EngineUtil.switchEngineVersion(serverId, version, getServerType());
    }
 
 }

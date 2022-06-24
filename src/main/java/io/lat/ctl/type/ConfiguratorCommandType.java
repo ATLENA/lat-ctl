@@ -2,7 +2,7 @@ package io.lat.ctl.type;
 
 public enum ConfiguratorCommandType {
     LIST_ENGINES("list-engines"),
-    MODIFY_ENGINE("modify-engine"),
+    SWITCH_VERSION("switch-version"),
     DOWNLOAD_ENGINE("download-engine");
 
     private String command;

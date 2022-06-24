@@ -15,9 +15,9 @@
 package io.lat.ctl.util;
 
 import io.lat.ctl.exception.LatException;
-import io.lat.ctl.installer.LatWasCreateInstaller;
-import io.lat.ctl.installer.LatWebCreateInstaller;
-import io.lat.ctl.installer.LatZodiacCreateInstaller;
+import io.lat.ctl.installer.LatTomcatCreateInstaller;
+import io.lat.ctl.installer.LatApacheCreateInstaller;
+import io.lat.ctl.installer.LatCometCreateInstaller;
 import io.lat.ctl.resolver.XpathVariable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -46,11 +46,11 @@ public class ReleaseInfoUtil {
 		String[] split = new String[]{"",""};
 
 		if(serverType.equals("apache")){
-			split = LatWebCreateInstaller.getEngineVersion("apache").split("\\.");
+			split = LatApacheCreateInstaller.getEngineVersion("apache").split("\\.");
 		}else if(serverType.equals("tomcat")){
-			split = LatWasCreateInstaller.getEngineVersion("tomcat").split("\\.");
+			split = LatTomcatCreateInstaller.getEngineVersion("tomcat").split("\\.");
 		}else if(serverType.equals("zodiac")){
-			split = LatZodiacCreateInstaller.getEngineVersion("zodiac").split("\\.");
+			split = LatCometCreateInstaller.getEngineVersion("zodiac").split("\\.");
 		}
 
 		return FileUtil.getConcatPath(EnvUtil.getLatManagementHome(), "depot", "template", serverType, "base-"+serverType+"-"+split[0]+"."+split[1]);

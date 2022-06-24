@@ -63,7 +63,7 @@ public class InstallInfoUtilTest extends FileBasedTestCase {
 				+ "  </servers>\n"
 				+ "        <modules>\n"
 				+ "                <module>\n"
-				+ "                        <id>lena-ctlr</id>\n"
+				+ "                        <id>lena-ctl</id>\n"
 				+ "                        <version>1.0.0</version>\n"
 				+ "                </module>\n"
 				+ "        </modules>\n"

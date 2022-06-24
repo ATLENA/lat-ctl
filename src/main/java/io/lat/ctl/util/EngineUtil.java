@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import io.lat.ctl.exception.LatException;
+import io.lat.ctl.installer.LatInstaller;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.compress.archivers.ArchiveInputStream;
 import org.apache.commons.compress.archivers.ArchiveStreamFactory;
@@ -13,13 +14,11 @@ import org.apache.commons.compress.compressors.CompressorInputStream;
 import org.apache.commons.compress.compressors.CompressorStreamFactory;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.httpclient.HttpClient;
-
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 
 import java.io.*;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
@@ -27,10 +26,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 public class EngineUtil {
-    public static void modifyEngine(String server_id, String version, String serverType){
+    public static void switchEngineVersion(String server_id, String version, String serverType){
 
 
 
@@ -41,6 +39,7 @@ public class EngineUtil {
 
         Process proc;
 
+        //TODO refactoring
         List<String> args = new ArrayList<String>();
         System.out.println(installRootPath+"/"+server_id+"/stop.sh");
         args.add(installRootPath+"/"+server_id+"/stop.sh");
@@ -87,55 +86,49 @@ public class EngineUtil {
     public static Collection<File> getInstalledEngines(String serverType){
         String runtimePath = FileUtil.getConcatPath(EnvUtil.getLatHome(), "engines", serverType);
 
-        //System.out.println(runtimePath);
-
         Collection<File> runtimes = CustomFileUtils.listDirectories(new File(runtimePath), new WildcardFileFilter("*"), TrueFileFilter.INSTANCE);
-        /*
-        for(File file:runtimes){
 
-            System.out.println(file.getName());
-        }
-
-         */
         return runtimes;
     }
 
 
-    public static void listEngines(String serverType) throws URISyntaxException, ExecutionException, InterruptedException, IOException {
+    public static void listEngines(String serverType) throws IOException {
         List<String> availableList = getEnginesFromGithub(serverType);
         Collection<File> installedList = getInstalledEngines(serverType);
+        String latestVersion = LatInstaller.getEngineVersion(serverType);
 
         for(String version : availableList){
-            version = version.substring(0, version.length()-7);
-            System.out.print(version.substring(serverType.length()+1));
 
+            version = version.substring(0, version.length()-7);
+
+
+            if(compareVersion(latestVersion, version.substring(serverType.length()+1))>0){
+                continue;
+            }
+
+            System.out.print(version);
 
             Iterator<File> it = installedList.iterator();
             while(it.hasNext()){
                 File file = it.next();
                 if(file.getName().equals(version)){
                     System.out.print(" *");
+                    it.remove();
                     break;
                 }
             }
             System.out.println();
         }
+
+        Iterator<File> left = installedList.iterator();
+        while(left.hasNext()){
+            System.out.println(left.next().getName()+" *");
+        }
     }
-    public static List<String> getEnginesFromGithub(String serverType) throws URISyntaxException, ExecutionException, InterruptedException, IOException {
+    public static List<String> getEnginesFromGithub(String serverType) throws IOException {
         String URL = "https://api.github.com/repos/ATLENA/lat-"+serverType+"-runtimes/git/trees/main";
 
-        /*
-        HttpClient client = HttpClient
-                .newBuilder().version(HttpClient.Version.HTTP_1_1).build();
-        String result = client.sendAsync(
-                        HttpRequest.newBuilder(
-                                new URI(address)).GET().build(),  //GET방식 요청
-                        HttpResponse.BodyHandlers.ofString()  //응답은 문자형태
-                ).thenApply(HttpResponse::body)  //thenApply메소드로 응답body값만 받기
-                .get();  //get메소드로 body값의 문자를 확인
-
-         */
-
+        //TODO STATUS CODE 로 에러 처리
         HttpClient client = new HttpClient();
         GetMethod getMethod = new GetMethod(URL);
         int statusCode = client.executeMethod(getMethod);
@@ -152,7 +145,6 @@ public class EngineUtil {
             String file = ja.get(i).getAsJsonObject().get("path").getAsString();
             if(file.endsWith(".tar.gz")){
                 re.add(file);
-                //System.out.println(file);
             }
 
         }
@@ -280,5 +272,24 @@ public class EngineUtil {
             throw new LatException("An I/O error has occurred : " + e);
         }
         return resultList;
+    }
+
+    public static int compareVersion(String version1, String version2)
+    {
+        String[] arr1 = version1.split("\\.");
+        String[] arr2 = version2.split("\\.");
+
+        // same number of version "." dots
+        for (int i = 0; i < 3; i++)
+        {
+            if(Integer.parseInt(arr1[i]) < Integer.parseInt(arr2[i]))
+                return -1;
+            if(Integer.parseInt(arr1[i]) > Integer.parseInt(arr2[i]))
+                return 1;
+        }
+
+        if(arr1[3].equals(arr2[3])) return 0;
+        else return arr1[3].compareTo(arr2[3]);
+        // went through all version numbers and they are all the same
     }
 }

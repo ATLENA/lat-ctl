@@ -5,7 +5,7 @@ import org.apache.commons.cli.Options;
 public class ConfigureCommandCtl {
     final String LIST_ENGINES = "LIST-ENGINES";
     final String DOWNLOAD_ENGINE = "DOWNLOAD-ENGINE";
-    final String MODIFY_ENGINE = "MODIFY-ENGINE";
+    final String SWITCH_VERSION = "SWITCH-VERSION";
 
     Options options = null;
 
@@ -21,12 +21,13 @@ public class ConfigureCommandCtl {
         if(LIST_ENGINES.toLowerCase().equals(command.toLowerCase())){
             result = true;
         }
-        if(DOWNLOAD_ENGINE.toLowerCase().equals(command.toLowerCase())){
+        else if(DOWNLOAD_ENGINE.toLowerCase().equals(command.toLowerCase())){
             result = true;
         }
-        if(MODIFY_ENGINE.toLowerCase().equals(command.toLowerCase())){
+        else if(SWITCH_VERSION.toLowerCase().equals(command.toLowerCase())){
             result = true;
         }
+
         return result;
     }
 }

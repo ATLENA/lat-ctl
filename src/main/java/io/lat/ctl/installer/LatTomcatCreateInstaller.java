@@ -14,7 +14,6 @@
 
 package io.lat.ctl.installer;
 
-import io.lat.ctl.exception.LatException;
 import io.lat.ctl.type.InstallerCommandType;
 import io.lat.ctl.type.InstallerServerType;
 import io.lat.ctl.util.CipherUtil;
@@ -30,10 +29,8 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -42,11 +39,11 @@ import java.util.Scanner;
  * @author Erick Yu
  *
  */
-public class LatWasCreateInstaller extends LatInstaller {
+public class LatTomcatCreateInstaller extends LatInstaller {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(LatWasCreateInstaller.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(LatTomcatCreateInstaller.class);
 
-	public LatWasCreateInstaller(InstallerCommandType installerCommandType, InstallerServerType installerServerType) {
+	public LatTomcatCreateInstaller(InstallerCommandType installerCommandType, InstallerServerType installerServerType) {
 		super(installerCommandType, installerServerType);
 		// TODO Auto-generated constructor stub
 	}

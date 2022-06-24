@@ -16,26 +16,24 @@
 
 package io.lat.ctl.installer;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.Scanner;
-
 import io.lat.ctl.exception.LatException;
 import io.lat.ctl.type.InstallerCommandType;
 import io.lat.ctl.type.InstallerServerType;
 import io.lat.ctl.util.EnvUtil;
 import io.lat.ctl.util.FileUtil;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Scanner;
+
 /**
  * Installer that can create LA:T Apache Webserver.
  * @author Erick Yu
  *
  */
-public class LatWebCreateInstaller extends LatInstaller {
+public class LatApacheCreateInstaller extends LatInstaller {
 
-	public LatWebCreateInstaller(InstallerCommandType installerCommandType, InstallerServerType installerServerType) {
+	public LatApacheCreateInstaller(InstallerCommandType installerCommandType, InstallerServerType installerServerType) {
 		super(installerCommandType, installerServerType);
 		// TODO Auto-generated constructor stub
 	}
