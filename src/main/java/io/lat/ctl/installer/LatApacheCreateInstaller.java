@@ -85,7 +85,7 @@ public class LatApacheCreateInstaller extends LatInstaller {
 		HashMap<String, String> commandMap = new HashMap<String, String>();
 		Scanner scan = new Scanner(System.in);
 		System.out.println("+-------------------------------------------------------------------------------------");
-		System.out.println("| 1. SERVER_ID means business code of system and its number of letter is from 3 to 5. ");
+		System.out.println("| 1. INSTANCE_ID means business code of system and its number of letter is from 3 to 5. ");
 		System.out.println("|    ex : webd-lat_7180, webd-lat, lat01                                           ");
 		System.out.print("|: ");
 		commandMap.put("SERVER_ID", scan.nextLine());

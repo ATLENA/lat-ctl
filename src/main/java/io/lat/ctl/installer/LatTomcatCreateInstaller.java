@@ -125,7 +125,7 @@ public class LatTomcatCreateInstaller extends LatInstaller {
 		Scanner scan = new Scanner(System.in);
 
 		System.out.println("+-------------------------------------------------------------------------------------");
-		System.out.println("| 1. SERVER_ID means business code of system and its number of letter is from 3 to 5. ");
+		System.out.println("| 1. INSTANCE_ID means business code of system and its number of letter is from 3 to 5. ");
 		System.out.println("|    ex : lat_was-8080                                                          ");
 		System.out.print("|: ");
 		commandMap.put("SERVER_ID", scan.nextLine());

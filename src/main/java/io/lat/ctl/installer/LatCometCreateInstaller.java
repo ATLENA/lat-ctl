@@ -105,7 +105,7 @@ public class LatCometCreateInstaller extends LatInstaller {
 		Scanner scan = new Scanner(System.in);
 
 		System.out.println("+-------------------------------------------------------------------------------------");
-		System.out.println("| 1. SERVER_ID means business code of system and its maximum number of letters is 20. ");
+		System.out.println("| 1. INSTANCE_ID means business code of system and its maximum number of letters is 20. ");
 		System.out.println("|    ex :  session-5105                                                               ");
 		System.out.print("|: ");
 		commandMap.put("SERVER_ID", scan.nextLine());
