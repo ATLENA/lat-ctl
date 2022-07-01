@@ -57,7 +57,7 @@ public class LatEngineConfigurator extends LatConfigurator {
         //TODO : 설치된 instance list 보여주는 로직 추가
         Scanner scan = new Scanner(System.in);
 
-        System.out.println("Enter SERVER_ID to switch version");
+        System.out.println("Enter INSTANCE_ID to switch version");
         System.out.print(": ");
         String serverId = scan.nextLine();
 
