@@ -109,28 +109,28 @@ public class LatCometCreateInstaller extends LatInstaller {
 		System.out.println("|    ex :  session-5105                                                               ");
 		System.out.print("|: ");
 		commandMap.put("SERVER_ID", scan.nextLine());
-		System.out.println("| 2. SERVICE_PORT is the port number used by Session Server.                          ");
+		System.out.println("| 2. SERVICE_PORT is the port number used by Session Instance.                          ");
 		System.out.println("|    ex : 5105                                                                        ");
 		System.out.print("|: ");
 		commandMap.put("SERVICE_PORT", scan.nextLine());
-		System.out.println("| 3. SECONDARY_SERVER_IP is the ip number communicate with Secondary Session Server   ");
+		System.out.println("| 3. SECONDARY_SERVER_IP is the ip number communicate with Secondary Session Instance   ");
 		System.out.println("|    ex : 127.0.0.1                                                                   ");
 		System.out.print("|: ");
 		commandMap.put("SECONDARY_SERVER_IP", scan.nextLine());
-		System.out.println("| 4. SECONDARY_SERVICE_PORT is the port number used by Secondary Session Server.      ");
+		System.out.println("| 4. SECONDARY_INSTANCE_PORT is the port number used by Secondary Session Instance.      ");
 		System.out.println("|    ex : 5106                                                                        ");
 		System.out.print("|: ");
 		commandMap.put("SECONDARY_SERVICE_PORT", scan.nextLine());
-		System.out.println("| 5. RUN_USER is user running Session Server                                          ");
+		System.out.println("| 5. RUN_USER is user running Session Instance                                          ");
 		System.out.println("|    default : " + EnvUtil.getRunuser());
 		System.out.print("|: ");
 		commandMap.put("RUN_USER", scan.nextLine());
-		System.out.println("| 6. INSTALL_ROOT_PATH is is server root directory in filesystem.                     ");
+		System.out.println("| 6. INSTALL_ROOT_PATH is instance root directory in filesystem.                     ");
 		System.out.println(
 				"|    default : " + FileUtil.getConcatPath(EnvUtil.getLatHome(), "instances", getServerType()));
 		System.out.print("|: ");
 		commandMap.put("INSTALL_ROOT_PATH", scan.nextLine());
-		System.out.println("| 7. LOG_HOME is LA:T Session Server's log directory in filesystem.                   ");
+		System.out.println("| 7. LOG_HOME is LA:T Session Instance's log directory in filesystem.                   ");
 		System.out.println("|    If you don't want to use default log directory input your custom log home prefix.");
 		System.out.println("|    default : " + FileUtil.getConcatPath(EnvUtil.getLatHome(), "instances",
 				getServerType(), commandMap.get("SERVER_ID"), "logs"));

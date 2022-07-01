@@ -1,8 +1,5 @@
 package io.lat.ctl.installer;
 
-import java.util.HashMap;
-import java.util.Scanner;
-
 import io.lat.ctl.common.vo.Server;
 import io.lat.ctl.exception.LatException;
 import io.lat.ctl.type.InstallerCommandType;
@@ -10,6 +7,9 @@ import io.lat.ctl.type.InstallerServerType;
 import io.lat.ctl.util.FileUtil;
 import io.lat.ctl.util.InstallInfoUtil;
 import io.lat.ctl.util.StringUtil;
+
+import java.util.HashMap;
+import java.util.Scanner;
 
 /**
  * lat 인스턴스를 삭제하는 공통 Installer
@@ -109,7 +109,7 @@ public class LatInstanceDeleteInstaller extends LatInstaller {
 		Scanner scan = new Scanner(System.in);
 
 		System.out.println("+-------------------------------------------------------------------------------------");
-		System.out.println("| 1. SERVER_ID : Server ID to delete                                                  ");
+		System.out.println("| 1. INSTANCE_ID : Instance ID to delete                                                  ");
 		System.out.print("|: ");
 		commandMap.put("SERVER_ID", scan.nextLine());
 //		System.out.println("| 2. LOG_HOME_DELETE_FLAG : whether to delete LOG Home ['Y','N','D'] ('D' is default) ");
