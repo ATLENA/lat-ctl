@@ -58,21 +58,29 @@ public class LatCometCreateInstaller extends LatInstaller {
 		String targetPath = FileUtil.getConcatPath(installRootPath, getTargetDirName(serverId, servicePort));
 		String logHome = getParameterValue(commandMap.get("LOG_HOME"), FileUtil.getConcatPath(targetPath, "logs"));
 
+		if(FileUtil.exists(targetPath)){
+			LOGGER.error("["+targetPath+"] directory already exists. Remove the directory and try again.");
+			throw new LatException("["+targetPath+"] directory already exists. Remove the directory and try again.");
+		}
 		// validate options
 		if (!StringUtil.isNumeric(servicePort)) {
+			LOGGER.error("Service Port should be numeric. : "+servicePort);
 			throw new LatException("Service Port should be numeric.");
 		}
 		if (!StringUtil.isNumeric(secondaryServicePort)) {
+			LOGGER.error("Service Port should be numeric. : "+secondaryServicePort);
 			throw new LatException("Service Port should be numeric.");
 		}
 
 		// installPath check
 		if (FileUtil.exists(targetPath)) {
+			LOGGER.error(targetPath + " already exists.");
 			throw new LatException(targetPath + " already exists.");
 		}
 
 		// run user check
 		if ("root".equals(runUser) && !EnvUtil.isRootUserAllowed()) {
+			LOGGER.error(getServerType() + " can't run as root user.");
 			throw new LatException(getServerType() + " can't run as root user.");
 		}
 
@@ -106,34 +114,40 @@ public class LatCometCreateInstaller extends LatInstaller {
 
 		System.out.println("+-------------------------------------------------------------------------------------");
 		System.out.println("| 1. INSTANCE_ID means business code of system and its maximum number of letters is 20. ");
-		System.out.println("|    ex :  session-5105                                                               ");
+		System.out.println("|    (ex :  session-5105)                                                               ");
 		System.out.print("|: ");
-		commandMap.put("SERVER_ID", scan.nextLine());
+		commandMap.put("SERVER_ID", checkEmpty(scan.nextLine()));
+		System.out.println("|");
 		System.out.println("| 2. SERVICE_PORT is the port number used by Session Instance.                          ");
-		System.out.println("|    ex : 5105                                                                        ");
+		System.out.println("|    (ex : 5105)                                                                        ");
 		System.out.print("|: ");
-		commandMap.put("SERVICE_PORT", scan.nextLine());
+		commandMap.put("SERVICE_PORT", checkEmpty(scan.nextLine()));
+		System.out.println("|");
 		System.out.println("| 3. SECONDARY_SERVER_IP is the ip number communicate with Secondary Session Instance   ");
-		System.out.println("|    ex : 127.0.0.1                                                                   ");
+		System.out.println("|    (ex : 127.0.0.1)                                                                   ");
 		System.out.print("|: ");
-		commandMap.put("SECONDARY_SERVER_IP", scan.nextLine());
+		commandMap.put("SECONDARY_SERVER_IP", checkEmpty(scan.nextLine()));
+		System.out.println("|");
 		System.out.println("| 4. SECONDARY_INSTANCE_PORT is the port number used by Secondary Session Instance.      ");
-		System.out.println("|    ex : 5106                                                                        ");
+		System.out.println("|    (ex : 5106)                                                                        ");
 		System.out.print("|: ");
-		commandMap.put("SECONDARY_SERVICE_PORT", scan.nextLine());
+		commandMap.put("SECONDARY_SERVICE_PORT", checkEmpty(scan.nextLine()));
+		System.out.println("|");
 		System.out.println("| 5. RUN_USER is user running Session Instance                                          ");
-		System.out.println("|    default : " + EnvUtil.getRunuser());
+		System.out.println("|    (default : " + EnvUtil.getRunuser()+")");
 		System.out.print("|: ");
 		commandMap.put("RUN_USER", scan.nextLine());
+		System.out.println("|");
 		System.out.println("| 6. INSTALL_ROOT_PATH is instance root directory in filesystem.                     ");
 		System.out.println(
-				"|    default : " + FileUtil.getConcatPath(EnvUtil.getLatHome(), "instances", getServerType()));
+				"|    (default : " + FileUtil.getConcatPath(EnvUtil.getLatHome(), "instances", getServerType())+")");
 		System.out.print("|: ");
 		commandMap.put("INSTALL_ROOT_PATH", scan.nextLine());
+		System.out.println("|");
 		System.out.println("| 7. LOG_HOME is LA:T Session Instance's log directory in filesystem.                   ");
 		System.out.println("|    If you don't want to use default log directory input your custom log home prefix.");
-		System.out.println("|    default : " + FileUtil.getConcatPath(EnvUtil.getLatHome(), "instances",
-				getServerType(), commandMap.get("SERVER_ID"), "logs"));
+		System.out.println("|    (default : " + FileUtil.getConcatPath(EnvUtil.getLatHome(), "instances",
+				getServerType(), commandMap.get("SERVER_ID"), "logs")+")");
 		System.out.print("|: ");
 		commandMap.put("LOG_HOME", scan.nextLine());
 		System.out.println("+-------------------------------------------------------------------------------------");

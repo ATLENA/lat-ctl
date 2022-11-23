@@ -26,12 +26,16 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Scanner;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Installer that can create LA:T Apache Webserver.
  * @author Erick Yu
  *
  */
 public class LatApacheCreateInstaller extends LatInstaller {
+	private static final Logger LOGGER = LoggerFactory.getLogger(LatApacheCreateInstaller.class);
 
 	public LatApacheCreateInstaller(InstallerCommandType installerCommandType, InstallerServerType installerServerType) {
 		super(installerCommandType, installerServerType);
@@ -55,6 +59,12 @@ public class LatApacheCreateInstaller extends LatInstaller {
 			String targetPath = FileUtil.getConcatPath(installRootPath, serverId);
 			String logHome = getParameterValue(commandMap.get("LOG_HOME"), FileUtil.getConcatPath(targetPath, "logs"));
 			String documentRootPath = getParameterValue(commandMap.get("DOCUMENT_ROOT_PATH"), FileUtil.getConcatPath(targetPath, "htdocs"));
+
+
+			if(FileUtil.exists(targetPath)){
+				LOGGER.error("["+targetPath+"] directory already exists. Remove the directory and try again.");
+				throw new LatException("["+targetPath+"] directory already exists. Remove the directory and try again.");
+			}
 
 			FileUtil.copyDirectory(getDepotPath(), targetPath);
 
@@ -86,31 +96,36 @@ public class LatApacheCreateInstaller extends LatInstaller {
 		Scanner scan = new Scanner(System.in);
 		System.out.println("+-------------------------------------------------------------------------------------");
 		System.out.println("| 1. INSTANCE_ID means business code of system and its number of letter is from 3 to 5. ");
-		System.out.println("|    ex : webd-lat_7180, webd-lat, lat01                                           ");
+		System.out.println("|    (ex : webd-lat_7180, webd-lat, lat01)                                           ");
 		System.out.print("|: ");
-		commandMap.put("SERVER_ID", scan.nextLine());
+		commandMap.put("SERVER_ID", checkEmpty(scan.nextLine()));
+		System.out.println("|");
 		System.out.println("| 2. SERVICE_PORT is the port number used by HTTP Connector.                          ");
-		System.out.println("|    default : 80                                                                     ");
+		System.out.println("|    (default : 80)                                                                     ");
 		System.out.print("|: ");
 		commandMap.put("SERVICE_PORT", scan.nextLine());
+		System.out.println("|");
 		System.out.println("| 3. RUN_USER is user running web-server                                              ");
-		System.out.println("|    default : " + EnvUtil.getRunuser());
+		System.out.println("|    (default : " + EnvUtil.getRunuser()+")");
 		System.out.print("|: ");
 		commandMap.put("RUN_USER", scan.nextLine());
 //		System.out.println("| 4. APACHE_ENGINE_PATH is the path of Apache Server engine                           ");
 //		System.out.println("|    default : " + FileUtil.getConcatPath(EnvUtil.getLatHome(), "engines", "apache", getEngineVersion("apache")));
 //		System.out.print("|: ");
 //		commandMap.put("APACHE_ENGINE_PATH", scan.nextLine());
+		System.out.println("|");
 		System.out.println("| 4. INSTALL_ROOT_PATH is Apache Server root directory in filesystem.                 ");
-		System.out.println("|    default : " + FileUtil.getConcatPath(EnvUtil.getLatHome(), "instances", "apache"));
+		System.out.println("|    (default : " + FileUtil.getConcatPath(EnvUtil.getLatHome(), "instances", "apache")+")");
 		System.out.print("|: ");
 		commandMap.put("INSTALL_ROOT_PATH", scan.nextLine());
+		System.out.println("|");
 		System.out.println("| 5. LOG_HOME is Apache Server's log directory in filesystem.                         ");
-		System.out.println("|    default : " + FileUtil.getConcatPath(EnvUtil.getLatHome(), "instances", "apache", commandMap.get("SERVER_ID"), "logs"));
+		System.out.println("|    (default : " + FileUtil.getConcatPath(EnvUtil.getLatHome(), "instances", "apache", commandMap.get("SERVER_ID"), "logs")+")");
 		System.out.print("|: ");
 		commandMap.put("LOG_HOME", scan.nextLine());
+		System.out.println("|");
 		System.out.println("| 6. DOCUMENT_ROOT_PATH is Apache Server's contents directory in filesystem.          ");
-		System.out.println("|    default : " + FileUtil.getConcatPath(EnvUtil.getLatHome(), "instances", "apache", commandMap.get("SERVER_ID"), "htdocs"));
+		System.out.println("|    (default : " + FileUtil.getConcatPath(EnvUtil.getLatHome(), "instances", "apache", commandMap.get("SERVER_ID"), "htdocs")+")");
 		System.out.print("|: ");
 		commandMap.put("DOCUMENT_ROOT_PATH", scan.nextLine());
 		System.out.println("+-------------------------------------------------------------------------------------");

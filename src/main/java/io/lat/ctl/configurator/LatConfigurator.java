@@ -12,4 +12,6 @@ public class LatConfigurator implements Configurator{
     public void execute(String[] args) {
 
     }
+
+
 }

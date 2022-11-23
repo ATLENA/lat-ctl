@@ -6,10 +6,18 @@ import io.lat.ctl.type.InstallerServerType;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ConfiguratorMapper {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(ConfiguratorMapper.class);
+	
     public static Configurator getConfigurator(List<String> commandList) throws Exception {
         String command = commandList.get(0);
         String serverType = commandList.get(1);
+        
+        LOGGER.debug("Start [latctl.sh "+command+" "+serverType+"]");
 
         InstallerServerType installerServerType=null;
         ConfiguratorCommandType configuratorCommandType=null;

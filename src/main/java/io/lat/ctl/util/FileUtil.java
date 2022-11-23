@@ -632,4 +632,24 @@ public class FileUtil {
 		
 		return canonicalPath;
 	}
+	
+	public static void deleteDirWithExceptDir(File targetPath, File logHome) {
+		
+		
+		for(File f:targetPath.listFiles()) {
+			if(f.equals(logHome)) {
+				return;
+			}else {
+				if(f.isDirectory()) {
+					deleteDirWithExceptDir(f, logHome);
+					if(f.list().length==0) {
+						f.delete();
+					}
+				}else {
+					f.delete();
+				}
+			}
+		}
+		return;
+	}
 }

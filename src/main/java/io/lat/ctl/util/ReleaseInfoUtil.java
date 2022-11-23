@@ -15,6 +15,7 @@
 package io.lat.ctl.util;
 
 import io.lat.ctl.exception.LatException;
+import io.lat.ctl.installer.LatNginxCreateInstaller;
 import io.lat.ctl.installer.LatTomcatCreateInstaller;
 import io.lat.ctl.installer.LatApacheCreateInstaller;
 import io.lat.ctl.installer.LatCometCreateInstaller;
@@ -51,6 +52,8 @@ public class ReleaseInfoUtil {
 			split = LatTomcatCreateInstaller.getEngineVersion("tomcat").split("\\.");
 		}else if(serverType.equals("comet")){
 			split = LatCometCreateInstaller.getEngineVersion("comet").split("\\.");
+		}else if(serverType.equals("nginx")){
+			split = LatNginxCreateInstaller.getEngineVersion("nginx").split("\\.");
 		}
 
 		return FileUtil.getConcatPath(EnvUtil.getLatManagementHome(), "depot", "template", serverType, "base-"+serverType+"-"+split[0]+"."+split[1]);

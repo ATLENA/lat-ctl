@@ -23,14 +23,17 @@ public class CommandCtl {
 	public static final String INSTALLER = "INSTALLER";
 	public static final String CONFIGURATOR = "CONFIGURATOR";
 	public static final String EXECUTOR = "EXECUTOR";
+	public static final String CONTROLLER = "CONTROLLER";
 
 	InstallCommandCtl installCommandCtl = null;
 	ConfigureCommandCtl configureCommandCtl = null;
+	ControllerCommandCtl controllerCommandCtl = null;
 
 	public CommandCtl() {
 
 		installCommandCtl = new InstallCommandCtl();
 		configureCommandCtl = new ConfigureCommandCtl();
+		controllerCommandCtl = new ControllerCommandCtl();
 	}
 
 	/**
@@ -44,6 +47,8 @@ public class CommandCtl {
 			result = INSTALLER;
 		} else if (configureCommandCtl.containsCommand(command)){
 			result = CONFIGURATOR;
+		} else if (controllerCommandCtl.containsCommand(command)){
+			result = CONTROLLER;
 		}
 
 		return result;

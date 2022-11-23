@@ -20,6 +20,9 @@ import io.lat.ctl.type.InstallerServerType;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Mapper class for mapping Web Installer or WAS Insatller.
  * @author Erick Yu
@@ -27,6 +30,7 @@ import java.util.List;
  */
 public class InstallerMapper {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(InstallerMapper.class);
 	/**
 	 * @param commandList
 	 * @return Server create Installer
@@ -34,6 +38,8 @@ public class InstallerMapper {
 	public static Installer getInstaller(List<String> commandList) {
 		String command = commandList.get(0);
 		String serverType = commandList.get(1);
+		
+		LOGGER.debug("Start [latctl.sh "+command+" "+serverType+"]");
 
 		InstallerServerType installerServerType = null;
 		InstallerCommandType installerCommandType = null;
@@ -65,6 +71,13 @@ public class InstallerMapper {
 				switch (installerCommandType) {
 					case CREATE:
 						return new LatCometCreateInstaller(installerCommandType, installerServerType);
+					case DELETE:
+						return new LatInstanceDeleteInstaller(installerCommandType, installerServerType);
+				}
+			case NGINX:
+				switch (installerCommandType){
+					case CREATE:
+						return new LatNginxCreateInstaller(installerCommandType, installerServerType);
 					case DELETE:
 						return new LatInstanceDeleteInstaller(installerCommandType, installerServerType);
 				}

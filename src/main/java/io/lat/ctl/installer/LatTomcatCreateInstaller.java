@@ -14,6 +14,7 @@
 
 package io.lat.ctl.installer;
 
+import io.lat.ctl.exception.LatException;
 import io.lat.ctl.type.InstallerCommandType;
 import io.lat.ctl.type.InstallerServerType;
 import io.lat.ctl.util.CipherUtil;
@@ -41,7 +42,9 @@ import java.util.Scanner;
  */
 public class LatTomcatCreateInstaller extends LatInstaller {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(LatTomcatCreateInstaller.class);
+	//private static final Logger LOGGER = LoggerFactory.getLogger(LatTomcatCreateInstaller.class);
+
+	private Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
 	public LatTomcatCreateInstaller(InstallerCommandType installerCommandType, InstallerServerType installerServerType) {
 		super(installerCommandType, installerServerType);
@@ -62,6 +65,13 @@ public class LatTomcatCreateInstaller extends LatInstaller {
 		String targetPath = FileUtil.getConcatPath(installRootPath, serverId);
 		String logHome = getParameterValue(commandMap.get("LOG_HOME"), FileUtil.getConcatPath(targetPath, "logs"));
 		String jvmRoute = getParameterValue(commandMap.get("JVM_ROUTE"), getDefaultValue(getServerType() + ".jvm-route"));
+
+
+
+		if(FileUtil.exists(targetPath)){
+			LOGGER.error("["+targetPath+"] directory already exists. Remove the directory and try again.");
+			throw new LatException("["+targetPath+"] directory already exists. Remove the directory and try again.");
+		}
 
 		//FileUtil.copyDirectory(FileUtil.getConcatPath(getDepotPath(), "module"), targetPath);
 		FileUtil.copyDirectory(getDepotPath(), targetPath);
@@ -126,32 +136,38 @@ public class LatTomcatCreateInstaller extends LatInstaller {
 
 		System.out.println("+-------------------------------------------------------------------------------------");
 		System.out.println("| 1. INSTANCE_ID means business code of system and its number of letter is from 3 to 5. ");
-		System.out.println("|    ex : lat_was-8080                                                          ");
+		System.out.println("|    (ex : lat_was-8080)                                                          ");
 		System.out.print("|: ");
-		commandMap.put("SERVER_ID", scan.nextLine());
+		commandMap.put("SERVER_ID", checkEmpty(scan.nextLine()));
+		System.out.println("|");
 		System.out.println("| 2. SERVICE_PORT is the port number used by HTTP Connector.                          ");
-		System.out.println("|    default : 8080                                                                   ");
+		System.out.println("|    (default : 8080)                                                                   ");
 		System.out.print("|: ");
 		commandMap.put("SERVICE_PORT", scan.nextLine());
+		System.out.println("|");
 		System.out.println("| 3. RUN_USER is user running LA:T Server                                            ");
-		System.out.println("|    default : "+EnvUtil.getRunuser());
+		System.out.println("|    (default : "+EnvUtil.getRunuser()+")");
 		System.out.print("|: ");
 		commandMap.put("RUN_USER", scan.nextLine());
+		System.out.println("|");
 		System.out.println("| 4. INSTALL_ROOT_PATH is server root directory in filesystem.                        ");
-		System.out.println("|    default : " + FileUtil.getConcatPath(EnvUtil.getLatHome(), "instances", "tomcat"));
+		System.out.println("|    (default : " + FileUtil.getConcatPath(EnvUtil.getLatHome(), "instances", "tomcat")+")");
 		System.out.print("|: ");
 		commandMap.put("INSTALL_ROOT_PATH", scan.nextLine());
+		System.out.println("|");
 		System.out.println("| 5. AJP_ADDRESS is IP addresss used for listening on the specified port.             ");
-		System.out.println("|    default : 127.0.0.1                                                              ");
+		System.out.println("|    (default : 127.0.0.1)                                                              ");
 		System.out.print("|: ");
 		commandMap.put("AJP_ADDRESS", scan.nextLine());
+		System.out.println("|");
 		System.out.println("| 6. LOG_HOME is LA:T Server's log directory in filesystem.                          ");
 		System.out.println("|    If you don't want to use default log directory input your custom log home prefix.");
-		System.out.println("|    default : " + FileUtil.getConcatPath(EnvUtil.getLatHome(), "instances", "tomcat", commandMap.get("SERVER_ID"), "logs"));
+		System.out.println("|    (default : " + FileUtil.getConcatPath(EnvUtil.getLatHome(), "instances", "tomcat", commandMap.get("SERVER_ID"), "logs")+")");
 		System.out.print("|: ");
 		commandMap.put("LOG_HOME", scan.nextLine());
+		System.out.println("|");
 		System.out.println("| 7. JVM_ROUTE is the name of a balanced worker for web-server.                       ");
-		System.out.println("|    default : host1_8180                                                             ");
+		System.out.println("|    (default : host1_8180)                                                             ");
 		System.out.print("|: ");
 		commandMap.put("JVM_ROUTE", scan.nextLine());
 		System.out.println("+-------------------------------------------------------------------------------------");

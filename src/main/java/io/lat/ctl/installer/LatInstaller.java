@@ -26,6 +26,10 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Scanner;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Abstract class for server create installer
@@ -40,6 +44,8 @@ public abstract class LatInstaller implements Installer {
 
 	private Map<String, String> resultMap;
 	private Map<String, String> defaultValueMap;
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(LatInstaller.class);
 
 	/**
 	 * @param installerCommandType command
@@ -171,7 +177,8 @@ public abstract class LatInstaller implements Installer {
 		map.put("apache.service-port", InstallConfigUtil.getProperty("apache.service-port.default", "80"));
 		map.put("apache.run-user", InstallConfigUtil.getProperty("apache.run-user.default", "latw"));
 		map.put("apache.template.dirname", InstallConfigUtil.getProperty("apache.template.dirname", "base"));
-		
+
+		map.put("nginx.service-port", InstallConfigUtil.getProperty("nginx.service-port.default", "8080"));
 		// TODO
 
 		return map;
@@ -225,12 +232,28 @@ public abstract class LatInstaller implements Installer {
 		String s=br.readLine();
 
 		if(s==null){
+			LOGGER.error(serverType+" engine is not installed");
 			throw new LatException(serverType+" engine is not installed");
 		} else{
 			return s.substring(s.indexOf("-") + 1);
 		}
 	}
 
+	protected String checkEmpty(String input){
+
+		Scanner scan = new Scanner(System.in);
+
+		while(input.isEmpty()){
+			System.out.println("| Invalid input. Please enter again.");
+			System.out.print("|: ");
+			input = scan.nextLine();
+		}
+
+		return input;
+	}
+
 	protected abstract void execute() throws IOException;
+
+
 
 }

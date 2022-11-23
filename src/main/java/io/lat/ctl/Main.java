@@ -17,8 +17,12 @@ package io.lat.ctl;
 import io.lat.ctl.common.CommandCtl;
 import io.lat.ctl.configurator.Configurator;
 import io.lat.ctl.configurator.ConfiguratorMapper;
+import io.lat.ctl.controller.Controller;
+import io.lat.ctl.controller.ControllerMapper;
 import io.lat.ctl.installer.Installer;
 import io.lat.ctl.installer.InstallerMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +34,9 @@ import java.util.List;
  */
 public class Main {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 	public static void main(String[] args) throws Exception {
+
 
 		List<String> commandList = new ArrayList<String>();
 
@@ -44,6 +50,7 @@ public class Main {
 			return;
 		}
 
+
 		String command = commandList.get(0); 
 
 		CommandCtl commandCtl = new CommandCtl();
@@ -55,7 +62,11 @@ public class Main {
 		}else if(commandMapper.equals(CommandCtl.CONFIGURATOR)) {
 			Configurator configurator = ConfiguratorMapper.getConfigurator(commandList);
 			configurator.execute(args);
-		}else{
+		}else if(commandMapper.equals(CommandCtl.CONTROLLER)){
+			Controller controller = ControllerMapper.getController(commandList);
+			controller.execute(args);
+		}
+		else{
 			CommandCtl.printHelpPage();
 			if(command != null){
 				System.exit(1);

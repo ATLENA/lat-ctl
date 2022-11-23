@@ -13,10 +13,15 @@ import org.apache.commons.compress.compressors.CompressorException;
 import org.apache.commons.compress.compressors.CompressorInputStream;
 import org.apache.commons.compress.compressors.CompressorStreamFactory;
 import org.apache.commons.compress.utils.IOUtils;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.GetMethod;
+//import org.apache.commons.httpclient.HttpClient;
+//import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 
 import java.io.*;
 import java.net.URL;
@@ -28,15 +33,17 @@ import java.util.Iterator;
 import java.util.List;
 
 public class EngineUtil {
-    public static void switchEngineVersion(String server_id, String version, String serverType){
+    public static void switchEngineVersion(String serverId, String version, String serverType){
 
 
 
         String installRootPath = FileUtil.getConcatPath(EnvUtil.getLatHome(), "instances", serverType);
-        String envPath = FileUtil.getConcatPath(installRootPath, server_id, "env.sh");
+        String envPath = FileUtil.getConcatPath(installRootPath, serverId, "env.sh");
         String currentVersion = FileUtil.getShellVariableString(envPath, "ENGN_VERSION");
         currentVersion = currentVersion.substring(13);
 
+
+        /*
         Process proc;
 
         //TODO refactoring
@@ -50,6 +57,19 @@ public class EngineUtil {
             System.out.println("Failed to stop the instance.");
             return;
         }
+
+
+         */
+        String targetPath = InstallInfoUtil.getServerInstallPath(serverId);
+
+        if (StringUtil.isBlank(targetPath)) {
+            throw new LatException(serverId + " doesn't exist.");
+        }
+
+        if (isRunning(targetPath, "ps")) {
+            throw new LatException(serverId + " is running.");
+        }
+
 
         System.out.println("VERSION: "+version);
         System.out.println("CURRENT VERSION: "+currentVersion);
@@ -129,13 +149,25 @@ public class EngineUtil {
         String URL = "https://api.github.com/repos/ATLENA/lat-"+serverType+"-runtimes/git/trees/main";
 
         //TODO STATUS CODE 로 에러 처리
-        HttpClient client = new HttpClient();
-        GetMethod getMethod = new GetMethod(URL);
-        int statusCode = client.executeMethod(getMethod);
-        String response = getMethod.getResponseBodyAsString();
+        HttpClient client = HttpClients.createDefault();
+        HttpGet getMethod = new HttpGet(URL);
+        HttpResponse httpResponse = client.execute(getMethod);
+        //int statusCode = httpResponse.getStatusLine().getStatusCode();
+        //String response = httpResponse.getEntity().toString();
+        
+        
+        
+        
+        
+        
+        //HttpClient client = new HttpClient();
+        //GetMethod getMethod = new GetMethod(URL);
+        //int statusCode = client.executeMethod(getMethod);
+        //String response = getMethod.getResponseBodyAsString();
 
         Gson gson = new Gson();
-        JsonObject jo = gson.fromJson(response, JsonObject.class);
+        //JsonObject jo = gson.fromJson(response, JsonObject.class);
+        JsonObject jo = gson.fromJson(EntityUtils.toString(httpResponse.getEntity()), JsonObject.class);
 
         List<String> re = new ArrayList<String>();
 
@@ -148,6 +180,8 @@ public class EngineUtil {
             }
 
         }
+        
+        
 
         return re;
     }
@@ -291,5 +325,25 @@ public class EngineUtil {
         if(arr1[3].equals(arr2[3])) return 0;
         else return arr1[3].compareTo(arr2[3]);
         // went through all version numbers and they are all the same
+    }
+
+    public static boolean isRunning(String targetPath, String commandFileName) {
+        boolean res = true;
+
+        String[] cmd = new String[]{FileUtil.getConcatPath(targetPath) + "/" + commandFileName + ".sh"};
+
+        try {
+            Process p = Runtime.getRuntime().exec(cmd);
+            BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            String s = br.readLine();
+
+            if(s == null) {
+                res = false;
+            }
+        } catch (Exception e) {
+            throw new LatException(e);
+        }
+
+        return res;
     }
 }
