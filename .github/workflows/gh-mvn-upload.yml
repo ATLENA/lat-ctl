@@ -31,7 +31,7 @@ jobs:
       - name: check settings.xml
         run: cat ~/.m2/settings.xml
       - name: Packaging with Maven
-        run: mvn -B package
+        run: mvn -B package -DskipTests
 #      - uses: actions/delete-package-versions@v1
 #        continue-on-error: true
 #        with:
