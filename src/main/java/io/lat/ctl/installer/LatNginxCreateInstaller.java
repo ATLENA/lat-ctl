@@ -129,7 +129,7 @@ public class LatNginxCreateInstaller extends LatInstaller {
 
         System.out.println("+-------------------------------------------------------------------------------------");
         System.out.println("| 1. INSTANCE_ID means business code of system and its number of letter is from 3 to 5. ");
-        System.out.println("|    (ex : lat_was-8080)                                                          ");
+        System.out.println("|    (ex : lat_nginx-8080)                                                          ");
         System.out.print("|: ");
         commandMap.put("INSTANCE_ID", checkEmpty(scan.nextLine()));
         System.out.println("|");
