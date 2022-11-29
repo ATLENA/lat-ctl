@@ -64,7 +64,7 @@ public class LatTomcatCreateInstallerTest {
 		LatTomcatCreateInstaller installer = new LatTomcatCreateInstaller(InstallerCommandType.CREATE, InstallerServerType.TOMCAT);
 		HashMap<String, String> result = installer.getServerInfoFromUser();
 
-		assertEquals(id, result.get("SERVER_ID"));
+		assertEquals(id, result.get("INSTANCE_ID"));
 		assertEquals(port, result.get("SERVICE_PORT"));
 		assertEquals(user, result.get("RUN_USER"));
 		assertEquals(installPath, result.get("INSTALL_ROOT_PATH"));
