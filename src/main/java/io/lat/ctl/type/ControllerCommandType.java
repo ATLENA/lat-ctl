@@ -1,5 +1,6 @@
 package io.lat.ctl.type;
 
+
 public enum ControllerCommandType {
 
 
@@ -7,6 +8,7 @@ public enum ControllerCommandType {
     STOP("stop"),
     RESTART("restart");
 
+	
     private String command;
 
     ControllerCommandType(String command){
@@ -16,4 +18,6 @@ public enum ControllerCommandType {
     public String getCommand() {
         return command;
     }
+
+
 }

@@ -49,7 +49,7 @@ public enum InstallerServerType {
 			type = InstallerServerType.valueOf(serverType.replace("-", "_").toUpperCase());
 		}
 		catch (Exception e) {
-			LOGGER.debug("Fail in getting install server type");
+			LOGGER.error("Fail in getting install server type");
 		}
 		return type;
 	}

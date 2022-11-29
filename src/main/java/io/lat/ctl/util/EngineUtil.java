@@ -3,6 +3,8 @@ package io.lat.ctl.util;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+
+import io.lat.ctl.configurator.ConfiguratorMapper;
 import io.lat.ctl.exception.LatException;
 import io.lat.ctl.installer.LatInstaller;
 import org.apache.commons.compress.archivers.ArchiveException;
@@ -22,6 +24,8 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.URL;
@@ -33,6 +37,8 @@ import java.util.Iterator;
 import java.util.List;
 
 public class EngineUtil {
+	private static final Logger LOGGER = LoggerFactory.getLogger(EngineUtil.class);
+
     public static void switchEngineVersion(String serverId, String version, String serverType){
 
 
@@ -73,6 +79,12 @@ public class EngineUtil {
 
         System.out.println("VERSION: "+version);
         System.out.println("CURRENT VERSION: "+currentVersion);
+        
+        if(version.equals(currentVersion)) {
+        	LOGGER.error(version+" is current version.");
+        	return;
+        	//throw new LatException(version+" is current version.");
+        }
 
         String[] splitVersion = version.split("\\.");
         String[] splitCurrentVersion = currentVersion.split("\\.");

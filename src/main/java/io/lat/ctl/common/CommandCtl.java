@@ -49,14 +49,14 @@ public class CommandCtl {
 			result = CONFIGURATOR;
 		} else if (controllerCommandCtl.containsCommand(command)){
 			result = CONTROLLER;
-		}
+		} 
 
 		return result;
 	}
 
 	public static void printHelpPage(){
 		System.out.println(
-				"Usage: latctl.sh COMMAND [SERVER_TYPE]\n" +
+				"Usage: latctl.sh [COMMAND] [SERVER_TYPE] ([INSTANCE_ID])\n" +
 						"\n" +
 						"Enlena commands are:\n" +
 						"\n" +
@@ -66,6 +66,13 @@ public class CommandCtl {
 						"\t\t\tex) latctl.sh create tomcat\n\n" +
 						"\tdelete\t\tRemoves an instance\n" +
 						"\t\t\tex) latctl.sh delete apache\n" +
+						"\n" +
+						"Instance Control Commands:\n" +
+						"\n" +
+						"\tstart\t\tStarts up the instance\n" +
+						"\t\t\tex) latctl.sh start nginx nginx-8080\n\n" +
+						"\tstop\t\tStops the instances\n" +
+						"\t\t\tex) latctl.sh stop comet session-5000\n\n" +
 						"\n" +
 						"OSS Engine Administration Commands:\n" +
 						"\n" +
@@ -78,7 +85,8 @@ public class CommandCtl {
 				"Available LA:T OSS [SERVER_TYPE]s:\n\n" +
 						"\ttomcat\tWeb Application Server\n\n" +
 						"\tapache\tHTTP Server\n\n" +
-						"\tcomet\tLA:T Session server\n\n"
+						"\tcomet\tLA:T Session server\n\n"+
+						"\tnginx\tNGINX server\n\n"
 		);
 	}
 }
