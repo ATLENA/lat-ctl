@@ -15,9 +15,9 @@ public class ControllerMapper {
     public static Controller getController(List<String> commandList) throws Exception {
         String command = commandList.get(0);
         String serverType = commandList.get(1);
-        String instanceName = commandList.get(2);
+        String instanceId = commandList.get(2);
         
-        LOGGER.debug("Start [latctl.sh "+command+" "+serverType+" "+instanceName+"]");
+        LOGGER.debug("Start [latctl.sh "+command+" "+serverType+" "+instanceId+"]");
         		
         ControllerCommandType controllerCommandType = null;
         InstallerServerType controllerServerType = null;
@@ -25,7 +25,7 @@ public class ControllerMapper {
         controllerCommandType = ControllerCommandType.valueOf(command.toUpperCase());
         controllerServerType = InstallerServerType.valueOf(serverType.toUpperCase());
 
-        if(controllerCommandType==null || controllerServerType==null || instanceName==null){
+        if(controllerCommandType==null || controllerServerType==null || instanceId==null){
             CommandCtl.printHelpPage();
             System.exit(1);
         }
@@ -34,31 +34,31 @@ public class ControllerMapper {
             case TOMCAT:
                 switch (controllerCommandType){
                     case START:
-                        return new LatTomcatStartController(controllerCommandType,controllerServerType,instanceName);
+                        return new LatTomcatStartController(controllerCommandType,controllerServerType,instanceId);
                     case STOP:
-                        return new LatTomcatStopController(controllerCommandType, controllerServerType, instanceName);
+                        return new LatTomcatStopController(controllerCommandType, controllerServerType, instanceId);
                 }
             case NGINX:
                 switch (controllerCommandType){
                     case START:
-                        return new LatNginxStartController(controllerCommandType, controllerServerType, instanceName);
+                        return new LatNginxStartController(controllerCommandType, controllerServerType, instanceId);
                     case STOP:
-                        return new LatNginxStopController(controllerCommandType, controllerServerType, instanceName);
+                        return new LatNginxStopController(controllerCommandType, controllerServerType, instanceId);
                 }
             case APACHE:
                 switch (controllerCommandType){
                     case START:
-                        return new LatApacheStartController(controllerCommandType, controllerServerType, instanceName);
+                        return new LatApacheStartController(controllerCommandType, controllerServerType, instanceId);
                     case STOP:
-                        return new LatApacheStopController(controllerCommandType, controllerServerType, instanceName);
+                        return new LatApacheStopController(controllerCommandType, controllerServerType, instanceId);
                 }
 
             case COMET:
                 switch (controllerCommandType){
                     case START:
-                        return new LatCometStartController(controllerCommandType, controllerServerType, instanceName);
+                        return new LatCometStartController(controllerCommandType, controllerServerType, instanceId);
                     case STOP:
-                        return new LatCometStopController(controllerCommandType, controllerServerType, instanceName);
+                        return new LatCometStopController(controllerCommandType, controllerServerType, instanceId);
                 }
         }
 

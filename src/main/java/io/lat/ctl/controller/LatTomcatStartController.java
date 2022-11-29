@@ -2,6 +2,7 @@ package io.lat.ctl.controller;
 
 import io.lat.ctl.type.ControllerCommandType;
 import io.lat.ctl.type.InstallerServerType;
+import io.lat.ctl.util.EnvUtil;
 import io.lat.ctl.util.FileUtil;
 
 import java.io.*;
@@ -18,11 +19,11 @@ public class LatTomcatStartController extends LatController{
 
     protected void execute() throws IOException {
 
-        String instanceName = getInstanceName();
+        String instanceId = getInstanceId();
         String runner = System.getProperty("run_user");
         String osName = System.getProperty("os.name");
 
-        Map<String, String> env = getEnv(instanceName);
+        Map<String, String> env = EnvUtil.getEnv(instanceId, getInstallerServerType());
 
         String catalinaPid = env.get("CATALINA_PID");
         String setUser = env.get("USER");
@@ -47,12 +48,12 @@ public class LatTomcatStartController extends LatController{
 
         //System.out.println(osName);
         if(osName.toLowerCase().contains("hp-ux")){
-            String[] cmd = {"/bin/sh","-c","ps -efx | grep java | grep was_cname="+instanceName+" | grep -v grep"};
+            String[] cmd = {"/bin/sh","-c","ps -efx | grep java | grep was_cname="+instanceId+" | grep -v grep"};
             Process p = Runtime.getRuntime().exec(cmd);
             BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
             String s=br.readLine();
             if(s!=null){
-                System.out.println("#### ERROR. "+instanceName+" is already running. exiting.. ####");
+                System.out.println("#### ERROR. "+instanceId+" is already running. exiting.. ####");
                 return;
             }
         }else{
@@ -64,7 +65,7 @@ public class LatTomcatStartController extends LatController{
             String s=br.readLine();
 
             if(s!=null){
-                System.out.println("#### ERROR. "+instanceName+" is already running. exiting.. ####");
+                System.out.println("#### ERROR. "+ instanceId +" is already running. exiting.. ####");
                 return;
             }
         }
@@ -104,8 +105,8 @@ public class LatTomcatStartController extends LatController{
                 System.out.println("Startup failed.");
                 return;
             }
-        }else if(catalinaOutHome!=null && instanceName != null){
-            FileUtil.deleteFilesByWildcard(catalinaOutHome,instanceName+"_*");
+        }else if(catalinaOutHome!=null && instanceId != null){
+            FileUtil.deleteFilesByWildcard(catalinaOutHome, instanceId +"_*");
         }
 
 
@@ -113,7 +114,7 @@ public class LatTomcatStartController extends LatController{
         for(File f:files){
             if(f.getName().contains("gc_") && f.getName().contains(".log")) {
                 f.renameTo(new File(FileUtil.getConcatPath(logHome, "gclog", f.getName())));
-            }else if(f.getName().contains(instanceName) && !f.getName().contains(logDate)){
+            }else if(f.getName().contains(instanceId) && !f.getName().contains(logDate)){
                 f.renameTo(new File(FileUtil.getConcatPath(logHome, "nohup", f.getName())));
             }else if(f.getName().contains("access_") && !f.getName().contains(logDate)){
                 f.renameTo(new File(FileUtil.getConcatPath(logHome, "access", f.getName())));

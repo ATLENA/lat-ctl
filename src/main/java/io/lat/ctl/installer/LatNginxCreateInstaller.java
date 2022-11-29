@@ -38,13 +38,15 @@ public class LatNginxCreateInstaller extends LatInstaller {
         String documentRootPath = getParameterValue(commandMap.get("DOCUMENT_ROOT_PATH"), FileUtil.getConcatPath(targetPath, "html"));
 
         String logHome = getParameterValue(commandMap.get("LOG_HOME"), FileUtil.getConcatPath(targetPath, "logs"));
+        
 
         String errorLog = FileUtil.getConcatPath(logHome,"error.log");
+        String accessLog = FileUtil.getConcatPath(logHome, "access.log");
         //String pid =  logHome + "/nginx.pid";
         String pid = FileUtil.getConcatPath(targetPath, instanceId+".pid");
         String runUser = getParameterValue(commandMap.get("RUN_USER"), EnvUtil.getRunuser());
 
-        String proxyPassName = commandMap.get("PROXY_PASS_NAME");
+        String proxyPassName = getParameterValue(commandMap.get("PROXY_PASS_NAME"),"backend");
         String upstreamServer = commandMap.get("UPSTREAM_SERVER");
 
 
@@ -56,9 +58,10 @@ public class LatNginxCreateInstaller extends LatInstaller {
         FileUtil.copyDirectory(getDepotPath(), targetPath);
 
         FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "LAT_HOME", EnvUtil.getLatHome());
-        FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "SERVER_ID", instanceId);
+        FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "INSTANCE_ID", instanceId);
         FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "INSTALL_PATH", targetPath);
 
+        FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "LOG_HOME", logHome);
         FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "ENGN_VERSION", getEngineVersion("nginx"));
 
         FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "WAS_USER", runUser);
@@ -68,8 +71,8 @@ public class LatNginxCreateInstaller extends LatInstaller {
         String conf = "error_log "+errorLog+";\n" +
                 "pid "+pid+";\n\n" +
                 "events {\n" +
-                "    worker_connections 1024;"+
-                "}";
+                "    worker_connections 1024;\n"+
+                "}\n\n";
 
 
         if(protocol.equals("TCP") || protocol.equals("UDP")){
@@ -90,7 +93,7 @@ public class LatNginxCreateInstaller extends LatInstaller {
         }else {
 
             conf = conf + "http {\n" ;
-            if(proxyPassName!=null){
+            if(upstreamServer!=null){
 
                 conf = conf + upstreamServer;
 
@@ -99,6 +102,7 @@ public class LatNginxCreateInstaller extends LatInstaller {
             conf = conf+"    server {\n" +
                     "        listen "+servicePort+";\n" +
                     "\n"+
+                    "        access_log "+accessLog+";\n"+
                     "        location / {\n" ;
 
             if(commandMap.get("SERVICE_TYPE").equals("1")) {
@@ -209,25 +213,29 @@ public class LatNginxCreateInstaller extends LatInstaller {
 
         int count=1;
         Scanner scan = new Scanner(System.in);
+        
+        if(proxyPassName.equals("")) {
+        	proxyPassName = "backend";
+        }
 
         System.out.println("|  -"+ count++ +". UPSTREAM_SERVER");
-        System.out.println(" IP:PORT if null, end ex) 127.0.0.1:3306");
+        System.out.println("| Enter [ IP:PORT ] ex) 127.0.0.1:3306");
         System.out.print("|: ");
         String backend = scan.nextLine();
 
-        if(backend==null){
+        if(backend==null || backend.equals("")){
             return null;
         }
 
         String upstream = "upstream "+proxyPassName+" {\n"
-                + "    server "+backend+"\n";
+                + "    server "+backend+";\n";
 
-        while(backend != null){
+        while(!backend.equals("")){
             System.out.println("|  -"+ count++ +". UPSTREAM_SERVER");
-            System.out.println(" IP:PORT if null, end ex) 127.0.0.1:3306");
+            System.out.println("|   Enter [ IP:PORT ] . To end, press Enter. ex) 127.0.0.1:3306");
             System.out.print("|: ");
             backend = scan.nextLine();
-            if(backend != null) {
+            if(!backend.equals("")) {
                 upstream = upstream + "    server " + backend + ";\n";
             }
         }

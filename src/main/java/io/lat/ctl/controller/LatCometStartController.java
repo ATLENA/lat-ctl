@@ -2,6 +2,7 @@ package io.lat.ctl.controller;
 
 import io.lat.ctl.type.ControllerCommandType;
 import io.lat.ctl.type.InstallerServerType;
+import io.lat.ctl.util.EnvUtil;
 import io.lat.ctl.util.FileUtil;
 
 import java.io.BufferedReader;
@@ -16,10 +17,10 @@ public class LatCometStartController extends LatController{
 
     @Override
     protected void execute() throws IOException {
-        String instanceName = getInstanceName();
+        String instanceID = getInstanceId();
         String runner = System.getProperty("run_user");
 
-        Map<String, String> env = getEnv(instanceName);
+        Map<String, String> env = EnvUtil.getEnv(instanceID, getInstallerServerType());
         String engnHome = env.get("ENGN_HOME");
         String runUser = env.get("RUN_USER");
         String logHome = env.get("LOG_HOME");
@@ -34,8 +35,8 @@ public class LatCometStartController extends LatController{
 
         String classPath = setClasspath(engnHome, "lena-session");
 
-        if(psCheckComet(instanceName, classPath) != null){
-            System.out.println("##### ERROR. "+instanceName+" is already running. exiting.. #####");
+        if(psCheckComet(instanceID, classPath) != null){
+            System.out.println("##### ERROR. "+instanceID+" is already running. exiting.. #####");
             return;
         }
 
@@ -71,7 +72,7 @@ public class LatCometStartController extends LatController{
         }
 
         if(logOutput.equals("console")){
-            printCometServerInfo("start", latHome, engnHome, cometHome, instanceName, cometPrimaryPort, javaHome);
+            printCometServerInfo("start", latHome, engnHome, cometHome, instanceID, cometPrimaryPort, javaHome);
 
             String[] cmd = {"/bin/sh","-c",FileUtil.getConcatPath(javaHome,"bin","java")+" "+javaOpts+" -cp .:"+classPath+" "+startClass+" &"};
             Process p = Runtime.getRuntime().exec(cmd);
@@ -93,7 +94,7 @@ public class LatCometStartController extends LatController{
                 System.out.println(s);
             }
 
-            printCometServerInfo("start", latHome, engnHome, cometHome, instanceName, cometPrimaryPort, javaHome);
+            printCometServerInfo("start", latHome, engnHome, cometHome, instanceID, cometPrimaryPort, javaHome);
 
         }
 

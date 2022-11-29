@@ -2,6 +2,7 @@ package io.lat.ctl.controller;
 
 import io.lat.ctl.type.ControllerCommandType;
 import io.lat.ctl.type.InstallerServerType;
+import io.lat.ctl.util.EnvUtil;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,10 +17,10 @@ public class LatNginxStopController extends LatController{
     @Override
     protected void execute() throws IOException {
 
-        String instanceName = getInstanceName();
+        String instanceId = getInstanceId();
         String runner = System.getProperty("run_user");
 
-        Map<String, String> env = getEnv(instanceName);
+        Map<String, String> env = EnvUtil.getEnv(instanceId, getInstallerServerType());
         String engnHome = env.get("ENGN_HOME");
         String installPath = env.get("INSTALL_PATH");
         String setUser = env.get("WAS_USER");
@@ -27,7 +28,7 @@ public class LatNginxStopController extends LatController{
 
 
         if(psCheckNginx(engnHome, installPath) == null){
-            System.out.println("##### "+instanceName+" is not running. There is nothing to stop.#######");
+            System.out.println("##### "+ instanceId +" is not running. There is nothing to stop.#######");
             return;
         }
 
@@ -36,7 +37,7 @@ public class LatNginxStopController extends LatController{
             return;
         }
 
-        System.out.println("Stopping LA:T [NGINX] ... "+instanceName);
+        System.out.println("Stopping LA:T [NGINX] ... "+ instanceId);
 
 
 
@@ -53,10 +54,10 @@ public class LatNginxStopController extends LatController{
         }
 
         if(psCheckNginx(engnHome, installPath) == null){
-            System.out.println("##### "+instanceName+" successfully shut down ###### ");
+            System.out.println("##### "+ instanceId +" successfully shut down ###### ");
 
         }else{
-            System.out.println("##### Fail to stop "+instanceName+"!!  Check Again!! ###### ");
+            System.out.println("##### Fail to stop "+ instanceId +"!!  Check Again!! ###### ");
         }
 
 

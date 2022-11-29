@@ -48,15 +48,15 @@ public class LatApacheCreateInstaller extends LatInstaller {
 	public void execute() {
 		try {
 
-			String version = getEngineVersion("apache");
+			//String version = getEngineVersion("apache");
 			HashMap<String, String> commandMap = getServerInfoFromUser();
-			String serverId = commandMap.get("SERVER_ID");
+			String instanceId = commandMap.get("INSTANCE_ID");
 			String servicePort = getParameterValue(commandMap.get("SERVICE_PORT"), getDefaultValue(getServerType() + ".service-port"));
 			String runUser = getParameterValue(commandMap.get("RUN_USER"), EnvUtil.getRunuser());
 			
 			//String apacheEnginePath = getParameterValue(commandMap.get("APACHE_ENGINE_PATH"), FileUtil.getConcatPath(EnvUtil.getLatHome(), "engines", "apache", "apache-" + version));
 			String installRootPath = getParameterValue(commandMap.get("INSTALL_ROOT_PATH"), FileUtil.getConcatPath(EnvUtil.getLatHome(), "instances", "apache"));
-			String targetPath = FileUtil.getConcatPath(installRootPath, serverId);
+			String targetPath = FileUtil.getConcatPath(installRootPath, instanceId);
 			String logHome = getParameterValue(commandMap.get("LOG_HOME"), FileUtil.getConcatPath(targetPath, "logs"));
 			String documentRootPath = getParameterValue(commandMap.get("DOCUMENT_ROOT_PATH"), FileUtil.getConcatPath(targetPath, "htdocs"));
 
@@ -71,7 +71,7 @@ public class LatApacheCreateInstaller extends LatInstaller {
 			FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "LAT_HOME", EnvUtil.getLatHome());
 			FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "ENGN_VERSION", getEngineVersion("apache"));
 			//FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "ENGN_HOME", apacheEnginePath);
-			FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "SERVER_ID", serverId);
+			FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "INSTANCE_ID", instanceId);
 			FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "SERVICE_PORT", servicePort);
 			FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "RUN_USER", runUser);
 			FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "INSTALL_PATH", targetPath);
@@ -81,7 +81,7 @@ public class LatApacheCreateInstaller extends LatInstaller {
 				FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "LOG_HOME", logHome + "/${SERVER_ID}");
 			}
 
-			addInstallInfo(serverId, servicePort, targetPath);
+			addInstallInfo(instanceId, servicePort, targetPath);
 		}
 		catch (Throwable e) {
 			throw new LatException(e);
@@ -98,7 +98,7 @@ public class LatApacheCreateInstaller extends LatInstaller {
 		System.out.println("| 1. INSTANCE_ID means business code of system and its number of letter is from 3 to 5. ");
 		System.out.println("|    (ex : webd-lat_7180, webd-lat, lat01)                                           ");
 		System.out.print("|: ");
-		commandMap.put("SERVER_ID", checkEmpty(scan.nextLine()));
+		commandMap.put("INSTANCE_ID", checkEmpty(scan.nextLine()));
 		System.out.println("|");
 		System.out.println("| 2. SERVICE_PORT is the port number used by HTTP Connector.                          ");
 		System.out.println("|    (default : 80)                                                                     ");
@@ -120,12 +120,12 @@ public class LatApacheCreateInstaller extends LatInstaller {
 		commandMap.put("INSTALL_ROOT_PATH", scan.nextLine());
 		System.out.println("|");
 		System.out.println("| 5. LOG_HOME is Apache Server's log directory in filesystem.                         ");
-		System.out.println("|    (default : " + FileUtil.getConcatPath(EnvUtil.getLatHome(), "instances", "apache", commandMap.get("SERVER_ID"), "logs")+")");
+		System.out.println("|    (default : " + FileUtil.getConcatPath(EnvUtil.getLatHome(), "instances", "apache", commandMap.get("INSTANCE_ID"), "logs")+")");
 		System.out.print("|: ");
 		commandMap.put("LOG_HOME", scan.nextLine());
 		System.out.println("|");
 		System.out.println("| 6. DOCUMENT_ROOT_PATH is Apache Server's contents directory in filesystem.          ");
-		System.out.println("|    (default : " + FileUtil.getConcatPath(EnvUtil.getLatHome(), "instances", "apache", commandMap.get("SERVER_ID"), "htdocs")+")");
+		System.out.println("|    (default : " + FileUtil.getConcatPath(EnvUtil.getLatHome(), "instances", "apache", commandMap.get("INSTANCE_ID"), "htdocs")+")");
 		System.out.print("|: ");
 		commandMap.put("DOCUMENT_ROOT_PATH", scan.nextLine());
 		System.out.println("+-------------------------------------------------------------------------------------");

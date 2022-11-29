@@ -2,6 +2,7 @@ package io.lat.ctl.controller;
 
 import io.lat.ctl.type.ControllerCommandType;
 import io.lat.ctl.type.InstallerServerType;
+import io.lat.ctl.util.EnvUtil;
 import io.lat.ctl.util.FileUtil;
 
 import java.io.*;
@@ -19,12 +20,12 @@ public class LatApacheStopController extends LatController{
 
 
 
-        String instanceName = getInstanceName();
+        String instanceId = getInstanceId();
 
         String runner = System.getProperty("run_user");
 
 
-        Map<String, String> env = getEnv(instanceName);
+        Map<String, String> env = EnvUtil.getEnv(instanceId, getInstallerServerType());
 
         String setUser = env.get("USER");
         String engnHome = env.get("ENGN_HOME");
@@ -36,7 +37,7 @@ public class LatApacheStopController extends LatController{
 
 
         if(psCheckApache(engnHome, installPath)==null){
-            System.out.println("##### "+instanceName+" is not running. There is nothing to stop.#######");
+            System.out.println("##### "+instanceId+" is not running. There is nothing to stop.#######");
             return;
         }
 
@@ -54,7 +55,7 @@ public class LatApacheStopController extends LatController{
 
 
 
-        System.out.println("Stopping LA:T [Apache] ... "+instanceName);
+        System.out.println("Stopping LA:T [Apache] ... "+instanceId);
 
 
 

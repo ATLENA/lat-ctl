@@ -7,11 +7,13 @@
     </appender>
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>/engn001/lat/lat-1.0.0.RELEASE/enlena/1.0.0.RELEASE/logs/lat-installer/latctl.log</file>
+        <!-- file>/engn001/lat/lat-1.0.0.RELEASE/enlena/1.0.0.RELEASE/logs/lat-installer/latctl.log</file-->
+        <file>../logs/lat-installer/latctl.log</file>
         <!-- file>C:\Users\75801\eclipse-workspace\lat-ctl\target\latctl.log</file-->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!--fileNamePattern>C:\Users\75801\eclipse-workspace\lat-ctl\target\latctl-%d{yyyy-MM-dd}.log</fileNamePattern-->
-            <fileNamePattern>/engn001/lat/lat-1.0.0.RELEASE/enlena/1.0.0.RELEASE/logs/lat-installer/latctl-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>../logs/lat-installer/latctl-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- fileNamePattern>/engn001/lat/lat-1.0.0.RELEASE/enlena/1.0.0.RELEASE/logs/lat-installer/latctl-%d{yyyy-MM-dd}.log</fileNamePattern-->
             <maxHistory>30</maxHistory>
         </rollingPolicy>
 
@@ -20,9 +22,9 @@
         </encoder>
     </appender>
 
-    <logger name="io.lat.ctl" level="trace"/>
+    <logger name="io.lat.ctl" level="info"/>
 
-    <root level="trace">
+    <root level="info">
         
         <appender-ref ref="FILE"/>
         <appender-ref ref="CONSOLE"/>

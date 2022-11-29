@@ -2,6 +2,8 @@ package io.lat.ctl.controller;
 
 import io.lat.ctl.type.ControllerCommandType;
 import io.lat.ctl.type.InstallerServerType;
+import io.lat.ctl.util.EnvUtil;
+import io.lat.ctl.util.FileUtil;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,18 +19,19 @@ public class LatNginxStartController extends LatController{
     protected void execute() throws IOException {
 
 
-        String instanceName = getInstanceName();
+        String instanceId = getInstanceId();
 
         String runner = System.getProperty("run_user");
         String osName = System.getProperty("os.name");
 
-        Map<String, String> env = getEnv(instanceName);
+        Map<String, String> env = EnvUtil.getEnv(instanceId, getInstallerServerType());
 
 
         String setUser = env.get("WAS_USER");
 
         String engnHome = env.get("ENGN_HOME");
         String installPath = env.get("INSTALL_PATH");
+        String logHome = env.get("LOG_HOME");
 
         if(runner.equals("root")){
             System.out.println("Deny Access : [ "+runner+" ].");
@@ -42,12 +45,12 @@ public class LatNginxStartController extends LatController{
 
 
         if(osName.toLowerCase().contains("hp-ux")){
-            String[] cmd = {"/bin/sh","-c","ps -efx | grep nginx | grep master | grep "+instanceName+" | grep -v grep"};
+            String[] cmd = {"/bin/sh","-c","ps -efx | grep nginx | grep master | grep "+instanceId+" | grep -v grep"};
             Process p = Runtime.getRuntime().exec(cmd);
             BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
             String s=br.readLine();
             if(s!=null){
-                System.out.println("#### ERROR. "+instanceName+" is already running. exiting.. ####");
+                System.out.println("#### ERROR. "+instanceId+" is already running. exiting.. ####");
                 return;
             }
         }else{
@@ -59,7 +62,15 @@ public class LatNginxStartController extends LatController{
             String s=br.readLine();
 
             if(s!=null){
-                System.out.println("#### ERROR. "+instanceName+" is already running. exiting.. ####");
+                System.out.println("#### ERROR. "+instanceId+" is already running. exiting.. ####");
+                return;
+            }
+        }
+        
+        if(logHome != null && !FileUtil.exists(logHome)){
+            if(!FileUtil.mkdirs(logHome)){
+                System.out.println("cannot create log directory "+logHome);
+                System.out.println("Startup failed.");
                 return;
             }
         }
@@ -78,7 +89,7 @@ public class LatNginxStartController extends LatController{
         }
 
         if(psCheckNginx(engnHome, installPath) == null){
-            System.out.println("##### Fail to start "+instanceName+"!!  Check Again!! ###### ");
+            System.out.println("##### Fail to start "+ instanceId +"!!  Check Again!! ###### ");
         }
 
 

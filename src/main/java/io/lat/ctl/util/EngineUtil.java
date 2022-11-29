@@ -88,8 +88,11 @@ public class EngineUtil {
 
         Iterator<File> it = runtimes.iterator();
         boolean isInstalled = false;
+        
         while(it.hasNext()){
-            if(it.next().getName().substring(7).equals(version)) {
+        	String name = it.next().getName();
+
+            if(name.substring(serverType.length()+1).equals(version)) {
                 isInstalled=true;
                 break;
             }
@@ -188,7 +191,11 @@ public class EngineUtil {
 
     public static void downloadEngine(String version, String serverType) throws Exception {
 
-        String FILE_NAME = serverType+"-"+version+".tar.gz";
+    	if(version.startsWith(serverType+"-")) {
+    		version = version.substring(serverType.length()+1);
+    	}
+    	
+    	String FILE_NAME = serverType+"-"+version+".tar.gz";
         String FILE_URL = "https://github.com/ATLENA/lat-"+serverType+"-runtimes/raw/main/"+FILE_NAME;
         String FILE_PATH = FileUtil.getConcatPath(EnvUtil.getLatHome(), "engines", serverType);
 
@@ -212,7 +219,11 @@ public class EngineUtil {
         System.out.println("Path to install = "+FILE_PATH);
 
         File[] files = unarchive(decompressedFile, new File(FileUtil.getConcatPath(FILE_PATH, serverType+"-"+version)));
-
+        
+        for(File file:files) {
+        	FileUtil.chmod755(file);
+        }
+        
         CustomFileUtils.deleteQuietly(compressedFile);
         CustomFileUtils.deleteQuietly(decompressedFile);
     }
@@ -225,6 +236,8 @@ public class EngineUtil {
         try {
             inputStream = new FileInputStream(compressedFile);
             compressorInputStream = new CompressorStreamFactory().createCompressorInputStream(CompressorStreamFactory.GZIP, inputStream);
+          
+            
             outputStream = new FileOutputStream(decompressedFile);
             IOUtils.copy(compressorInputStream, outputStream);
 

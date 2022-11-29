@@ -2,6 +2,7 @@ package io.lat.ctl.controller;
 
 import io.lat.ctl.type.ControllerCommandType;
 import io.lat.ctl.type.InstallerServerType;
+import io.lat.ctl.util.EnvUtil;
 import io.lat.ctl.util.FileUtil;
 
 import java.io.*;
@@ -21,23 +22,23 @@ public class LatTomcatStopController extends LatController{
     @Override
     protected void execute() throws IOException {
 
-        String instanceName = getInstanceName();
+        String instanceId = getInstanceId();
         String runner = System.getProperty("run_user");
-        String osName = System.getProperty("os.name");
+        //String osName = System.getProperty("os.name");
 
-        Map<String, String> env = getEnv(instanceName);
+        Map<String, String> env = EnvUtil.getEnv(instanceId, getInstallerServerType());
 
         String instName = env.get("INST_NAME");
-        String catalinaPid = env.get("CATALINA_PID");
+        //String catalinaPid = env.get("CATALINA_PID");
         String setUser = env.get("USER");
-        String dumpHome = env.get("DUMP_HOME");
+        //String dumpHome = env.get("DUMP_HOME");
         String logHome = env.get("LOG_HOME");
         String catalinaOut = env.get("CATALINA_OUT");
         String catalinaOutHome = env.get("CATALINA_OUT_HOME");
         String catalinaHome = env.get("CATALINA_HOME");
         String catalinaBase = env.get("CATALINA_BASE");
 
-        String logDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        //String logDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 
         if(runner.equals("root")){
             System.out.println("Deny Access : [ "+runner+" ].");
@@ -78,7 +79,7 @@ public class LatTomcatStopController extends LatController{
 
 
         if(psCheckTomcat(catalinaBase)==null){
-            System.out.println("#### ERROR. "+instanceName+" is not running. There is nothing to stop.#######");
+            System.out.println("#### ERROR. "+ instanceId +" is not running. There is nothing to stop.#######");
             return;
         }
 

@@ -34,10 +34,14 @@ public class ConfiguratorMapper {
             case APACHE:
             case TOMCAT:
             case COMET:
+            case NGINX:
                 switch(configuratorCommandType){
                     case LIST_ENGINES:
                     case SWITCH_VERSION:
                     case DOWNLOAD_ENGINE:
+                    case LE:
+                    case SV:
+                    case DE:
                         return new LatEngineConfigurator(configuratorCommandType, installerServerType);
                 }
         }

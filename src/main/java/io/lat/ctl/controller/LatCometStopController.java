@@ -2,6 +2,7 @@ package io.lat.ctl.controller;
 
 import io.lat.ctl.type.ControllerCommandType;
 import io.lat.ctl.type.InstallerServerType;
+import io.lat.ctl.util.EnvUtil;
 import io.lat.ctl.util.FileUtil;
 
 import java.io.BufferedReader;
@@ -17,10 +18,10 @@ public class LatCometStopController extends LatController{
     @Override
     protected void execute() throws IOException {
 
-        String instanceName = getInstanceName();
+        String instanceId = getInstanceId();
         String runner = System.getProperty("run_user");
 
-        Map<String, String> env = getEnv(instanceName);
+        Map<String, String> env = EnvUtil.getEnv(instanceId, getInstallerServerType());
         String engnHome = env.get("ENGN_HOME");
         String runUser = env.get("RUN_USER");
         String javaHome = env.get("JAVA_HOME");
@@ -35,12 +36,12 @@ public class LatCometStopController extends LatController{
             return;
         }
 
-        if(psCheckComet(instanceName, classPath) == null){
-            System.out.println("##### "+instanceName+" is not running. exiting.. #####");
+        if(psCheckComet(instanceId, classPath) == null){
+            System.out.println("##### "+instanceId+" is not running. exiting.. #####");
             return;
         }
 
-        String pid = psCheckComet(instanceName, classPath).split("\\s+")[1];
+        String pid = psCheckComet(instanceId, classPath).split("\\s+")[1];
 
 
 
@@ -54,6 +55,6 @@ public class LatCometStopController extends LatController{
             System.out.println(s);
         }
 
-        printCometServerInfo("stop", latHome, engnHome, cometHome, instanceName, cometPrimaryPort, javaHome);
+        printCometServerInfo("stop", latHome, engnHome, cometHome, instanceId, cometPrimaryPort, javaHome);
     }
 }

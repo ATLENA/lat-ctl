@@ -14,6 +14,14 @@
 
 package io.lat.ctl.util;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
+
+import io.lat.ctl.type.InstallerServerType;
+
 /**
  * Read jvm properties and load them into the EnvUtil object.
  *
@@ -157,4 +165,28 @@ public class EnvUtil {
 	public static String getSystemProperty(String key, String def) {
 		return System.getProperty(key, def);
 	}
+	
+    public static Map<String, String> getEnv(String instanceName, InstallerServerType installerServerType) throws IOException {
+
+        String[] cmd = new String[]{EnvUtil.getLatHome()+"/instances/"+ installerServerType.toString().toLowerCase()+"/"+instanceName+"/bin/print-env.sh"};
+
+        Map<String, String> env = new HashMap<String, String>();
+
+        Process p = Runtime.getRuntime().exec(cmd);
+        BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+        String s="";
+
+        while((s=br.readLine())!=null){
+            //System.out.println(s);
+            int i = s.indexOf('=');
+            if(i<=0) continue;
+            String key = s.substring(0, i);
+            String value = s.substring(i+1);
+            env.put(key, value);
+            //System.out.println(key+" = "+value);
+        }
+
+        return env;
+
+    }
 }

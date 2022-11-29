@@ -56,13 +56,13 @@ public class LatTomcatCreateInstaller extends LatInstaller {
 	 */
 	public void execute() throws IOException {
 		HashMap<String, String> commandMap = getServerInfoFromUser();
-		String serverId = commandMap.get("SERVER_ID");
+		String instanceId = commandMap.get("INSTANCE_ID");
 		String servicePort = getParameterValue(commandMap.get("SERVICE_PORT"), getDefaultValue(getServerType() + ".service-port"));
 		String runUser = getParameterValue(commandMap.get("RUN_USER"), EnvUtil.getRunuser());
 		String installRootPath = FileUtil.getConcatPath(EnvUtil.getLatHome(), "instances", getServerType());
 		String ajpAddress = getParameterValue(commandMap.get("AJP_ADDRESS"), getDefaultValue(getServerType() + ".ajp-address"));
-		String ajpSecret = CipherUtil.md5(serverId);
-		String targetPath = FileUtil.getConcatPath(installRootPath, serverId);
+		String ajpSecret = CipherUtil.md5(instanceId);
+		String targetPath = FileUtil.getConcatPath(installRootPath, instanceId);
 		String logHome = getParameterValue(commandMap.get("LOG_HOME"), FileUtil.getConcatPath(targetPath, "logs"));
 		String jvmRoute = getParameterValue(commandMap.get("JVM_ROUTE"), getDefaultValue(getServerType() + ".jvm-route"));
 
@@ -78,7 +78,7 @@ public class LatTomcatCreateInstaller extends LatInstaller {
 
 		FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "JAVA_HOME", EnvUtil.getUserJavahome());
 		FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "LAT_HOME", EnvUtil.getLatHome());
-		FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "SERVER_ID", serverId);
+		FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "INSTANCE_ID", instanceId);
 		FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "SERVICE_PORT", servicePort);
 		FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "INSTALL_PATH", targetPath);
 		FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "WAS_USER", runUser);
@@ -86,7 +86,7 @@ public class LatTomcatCreateInstaller extends LatInstaller {
 		FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "ENGN_VERSION", getEngineVersion("tomcat"));
 
 		if (!logHome.equals(FileUtil.getConcatPath(targetPath, "logs"))) {
-			FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "LOG_HOME", logHome + "/${SERVER_ID}");
+			FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "LOG_HOME", logHome + "/${INSTANCE_ID}");
 		}
 
 		FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "AJP_ADDRESS", ajpAddress);
@@ -98,7 +98,7 @@ public class LatTomcatCreateInstaller extends LatInstaller {
 		setSampleApplicationDocBase(targetPath);
 
 		// update install-info.xml
-		addInstallInfo(serverId, servicePort, targetPath);
+		addInstallInfo(instanceId, servicePort, targetPath);
 	}
 
 	/**
@@ -138,7 +138,7 @@ public class LatTomcatCreateInstaller extends LatInstaller {
 		System.out.println("| 1. INSTANCE_ID means business code of system and its number of letter is from 3 to 5. ");
 		System.out.println("|    (ex : lat_was-8080)                                                          ");
 		System.out.print("|: ");
-		commandMap.put("SERVER_ID", checkEmpty(scan.nextLine()));
+		commandMap.put("INSTANCE_ID", checkEmpty(scan.nextLine()));
 		System.out.println("|");
 		System.out.println("| 2. SERVICE_PORT is the port number used by HTTP Connector.                          ");
 		System.out.println("|    (default : 8080)                                                                   ");
@@ -162,7 +162,7 @@ public class LatTomcatCreateInstaller extends LatInstaller {
 		System.out.println("|");
 		System.out.println("| 6. LOG_HOME is LA:T Server's log directory in filesystem.                          ");
 		System.out.println("|    If you don't want to use default log directory input your custom log home prefix.");
-		System.out.println("|    (default : " + FileUtil.getConcatPath(EnvUtil.getLatHome(), "instances", "tomcat", commandMap.get("SERVER_ID"), "logs")+")");
+		System.out.println("|    (default : " + FileUtil.getConcatPath(EnvUtil.getLatHome(), "instances", "tomcat", commandMap.get("INSTANCE_ID"), "logs")+")");
 		System.out.print("|: ");
 		commandMap.put("LOG_HOME", scan.nextLine());
 		System.out.println("|");

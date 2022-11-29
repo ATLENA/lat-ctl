@@ -14,6 +14,8 @@
 
 package io.lat.ctl.util;
 
+import java.util.ArrayList;
+
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
@@ -21,10 +23,14 @@ import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import io.lat.ctl.common.vo.Server;
 import io.lat.ctl.exception.LatException;
 import io.lat.ctl.resolver.XpathVariable;
+import io.lat.ctl.type.InstallerServerType;
 
 /**
  * Install info utilities.
@@ -45,7 +51,7 @@ public class InstallInfoUtil {
 		XPath xpath = XPathFactory.newInstance().newXPath();
 		try {
 			if (existsServer(server.getId())) {
-				throw new LatException("Server id alreay exists. '" + server.getId() + "'");
+				throw new LatException("Instance id alreay exists. '" + server.getId() + "'");
 			}
 
 			Element serversElement = (Element) xpath.evaluate("//install/servers", document, XPathConstants.NODE);
@@ -77,7 +83,7 @@ public class InstallInfoUtil {
 		String argoInstallFilePath = getInstallInfoFilePath();
 		
 		if(!existsServer(id)){
-			throw new LatException("Server id doesn't exist. '" +  id + "'");
+			throw new LatException("Instance id doesn't exist. '" +  id + "'");
 		}
 		
 		Document document = XmlUtil.createDocument(argoInstallFilePath);
@@ -106,11 +112,11 @@ public class InstallInfoUtil {
 	/**
 	 * The Server exist or not
 	 *
-	 * @param serverId the server id
-	 * @return ture if the server exists , otherwise false
+	 * @param instanceId the instance id
+	 * @return true if the server exists , otherwise false
 	 */
-	public static boolean existsServer(String serverId) {
-		if (!StringUtil.isBlank(getServerInstallPath(serverId))) {
+	public static boolean existsServer(String instanceId) {
+		if (!StringUtil.isBlank(getServerInstallPath(instanceId))) {
 			return true;
 		}
 
@@ -120,27 +126,114 @@ public class InstallInfoUtil {
 	/**
 	 * Search installation path of the server
 	 *
-	 * @param serverId the server id
+	 * @param instanceId the instance id
 	 * @return server install path
 	 */
-	public static String getServerInstallPath(String serverId) {
-		return XmlUtil.getValueByTagName(getServerElement(serverId), "path");
+	public static String getServerInstallPath(String instanceId) {
+		return XmlUtil.getValueByTagName(getServerElement(instanceId), "path");
+	}
+	
+	public static ArrayList<Element> getServerByType(InstallerServerType serverType) {
+	
+		String argoInstallFilePath = getInstallInfoFilePath();
+
+		//Element element = document.createElement(nodeName);
+		//NodeList nodeList = element.getElementsByTagName(tagName);
+		
+		Document document = XmlUtil.createDocument(argoInstallFilePath);
+		
+		
+		//File inputFile = new File("/employee.xml");
+        //DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+        //DocumentBuilder dBuilder;
+        //dBuilder = dbFactory.newDocumentBuilder();
+        //Document doc = dBuilder.parse(inputFile);
+        document.getDocumentElement().normalize();
+        XPath xPath =  XPathFactory.newInstance().newXPath();
+        String expression = "/install/servers/server";      
+        ArrayList<Element> element = new ArrayList<Element> ();
+        NodeList nodeList;
+		try {
+			nodeList = (NodeList) xPath.compile(expression).evaluate(document, XPathConstants.NODESET);
+		
+        for (int i = 0; i < nodeList.getLength(); i++) {
+            Node nNode = nodeList.item(i);
+            //System.out.println("\nCurrent Element :" + nNode.getNodeName());
+            if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+            	
+                Element eElement = (Element) nNode;
+                /*
+                System.out.println("Id : " 
+                        + eElement
+                        .getElementsByTagName("id")
+                        .item(0)
+                        .getTextContent());
+                System.out.println("Type : " 
+                        + eElement
+                        .getElementsByTagName("type")
+                        .item(0)
+                        .getTextContent());
+                System.out.println("Path : " 
+                        + eElement
+                        .getElementsByTagName("path")
+                        .item(0)
+                        .getTextContent());
+                        */
+                if(eElement.getElementsByTagName("type").item(0).getTextContent().equals(serverType.getServerType())) {
+                	element.add(eElement);
+                }
+            }
+        }
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		/*
+		NodeList nodeList = document.getElementsByTagName("server");
+		ArrayList<Element> element = null;
+		System.out.println("LENGTH="+nodeList.getLength());
+		for(int i=0; i<nodeList.getLength(); i++) {
+			Element e = (Element) nodeList.item(i);
+			
+			NamedNodeMap nnm = nodeList.item(i).getAttributes();
+			System.out.println("ID");
+			System.out.println(nnm.item(0));
+			
+			
+			System.out.println("GET TEXT CONTENT");
+			System.out.println(nodeList.item(i).getTextContent());
+			System.out.println("GET NODE VALUE");
+			System.out.println(nodeList.item(i).getNodeValue());
+			
+			
+			System.out.println("getAttribute type");
+			System.out.println(e.getAttribute("type"));
+			//if(e.getAttribute("type").equals(serverType.getServerType())){
+				element.add(e);
+			//}
+			
+		}
+		*/
+		
+		return element;
 	}
 
 	/**
 	 * Search element of the server in install-info.xml
 	 * 
-	 * @param serverId the searver Id
+	 * @param instanceId the instance Id
 	 * @return element object
 	 */
-	private static Element getServerElement(String serverId) {
+	private static Element getServerElement(String instanceId) {
 		String argoInstallFilePath = getInstallInfoFilePath();
 
 		Document document = XmlUtil.createDocument(argoInstallFilePath);
 		XPath xpath = XPathFactory.newInstance().newXPath();
 		Element element = null;
 		try {
-			element = (Element) XmlUtil.xpathEvaluate("//install/servers/server[id=$id]", document, XPathConstants.NODE, xpath, new XpathVariable("id", serverId));
+			element = (Element) XmlUtil.xpathEvaluate("//install/servers/server[id=$id]", document, XPathConstants.NODE, xpath, new XpathVariable("id", instanceId));
 		}
 		catch (XPathExpressionException e) {
 			throw new LatException("Errors in release xml file", e);
@@ -150,23 +243,23 @@ public class InstallInfoUtil {
 	}
 	
 	/**
-	 * Return service port of the server id
-	 * @param serverId
+	 * Return service port of the instance id
+	 * @param instanceId
 	 * @return port
 	 */
-	public static String getServicePort(String serverId) {
-		return XmlUtil.getValueByTagName(getServerElement(serverId), "port");
+	public static String getServicePort(String instanceId) {
+		return XmlUtil.getValueByTagName(getServerElement(instanceId), "port");
 	}
 	
 	/**
-	 * Return Server object of server id
-	 * @param serverId
+	 * Return Server object of instance id
+	 * @param instanceId
 	 * @return
 	 */
-	public static Server getServer(String serverId){
-		Element serverElement = getServerElement(serverId);
+	public static Server getServer(String instanceId){
+		Element serverElement = getServerElement(instanceId);
 		if(serverElement == null){
-			throw new LatException("There is no installed server '" + serverId + "'");
+			throw new LatException("There is no installed server '" + instanceId + "'");
 		}
 		return getServerByElement(serverElement);
 	}

@@ -2,6 +2,7 @@ package io.lat.ctl.controller;
 
 import io.lat.ctl.type.ControllerCommandType;
 import io.lat.ctl.type.InstallerServerType;
+import io.lat.ctl.util.EnvUtil;
 import io.lat.ctl.util.FileUtil;
 
 import java.io.*;
@@ -19,12 +20,12 @@ public class LatApacheStartController extends LatController{
 
     protected void execute() throws IOException {
 
-        String instanceName = getInstanceName();
+        String instanceId = getInstanceId();
 
         String runner = System.getProperty("run_user");
         String osName = System.getProperty("os.name");
 
-        Map<String, String> env = getEnv(instanceName);
+        Map<String, String> env = EnvUtil.getEnv(instanceId, getInstallerServerType());
 
         String catalinaPid = env.get("CATALINA_PID");
         String setUser = env.get("USER");
@@ -57,7 +58,7 @@ public class LatApacheStartController extends LatController{
 
         String[] logDirs = {"access", "error", "jk"};
         for(String dir:logDirs){
-            if(FileUtil.exists(logHome+"/"+dir)){
+            if(!FileUtil.exists(logHome+"/"+dir)){
                 if(!FileUtil.mkdirs(logHome+"/"+dir)){
                     System.out.println("cannot create log directory "+logHome+"/"+dir);
                     System.out.println("Startup failed.");

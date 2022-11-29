@@ -2,30 +2,27 @@ package io.lat.ctl.controller;
 
 import io.lat.ctl.type.ControllerCommandType;
 import io.lat.ctl.type.InstallerServerType;
-import io.lat.ctl.util.EnvUtil;
 import io.lat.ctl.util.FileUtil;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.Map;
 
 public abstract class LatController implements Controller {
 
-    private ControllerCommandType controllerCommandType;
-    private InstallerServerType installerServerType;
-    private String instanceName;
+	private ControllerCommandType controllerCommandType;
+	private InstallerServerType installerServerType;
+    private String instanceId;
 
-    public LatController(ControllerCommandType controllerCommandType, InstallerServerType installerServerType, String instanceName){
+    public LatController(ControllerCommandType controllerCommandType, InstallerServerType installerServerType, String instanceId){
         this.controllerCommandType = controllerCommandType;
-        this.installerServerType = installerServerType;
-        this.instanceName = instanceName;
+        this.setInstallerServerType(installerServerType);
+        this.instanceId = instanceId;
     }
 
-    protected String getInstanceName(){
-        return instanceName;
+    protected String getInstanceId(){
+        return instanceId;
     }
 
     public void execute(String[] args) throws IOException {
@@ -33,36 +30,14 @@ public abstract class LatController implements Controller {
     }
     protected abstract void execute() throws IOException;
 
-    protected Map<String, String> getEnv(String instanceName) throws IOException {
 
-        String[] cmd = new String[]{EnvUtil.getLatHome()+"/instances/"+ installerServerType.toString().toLowerCase()+"/"+instanceName+"/bin/print-env.sh"};
-
-        Map<String, String> env = new HashMap<String, String>();
-
-        Process p = Runtime.getRuntime().exec(cmd);
-        BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
-        String s="";
-
-        while((s=br.readLine())!=null){
-            //System.out.println(s);
-            int i = s.indexOf('=');
-            if(i<=0) continue;
-            String key = s.substring(0, i);
-            String value = s.substring(i+1);
-            env.put(key, value);
-            //System.out.println(key+" = "+value);
-        }
-
-        return env;
-
-    }
 
     protected String psCheckTomcat(String catalinaBase) throws IOException {
 
         String osName = System.getProperty("os.name");
 
         if(osName.toLowerCase().contains("hp-ux")){
-            String[] cmd = {"/bin/sh","-c","ps -efx | grep java | grep was_cname="+instanceName+" | grep -v grep"};
+            String[] cmd = {"/bin/sh","-c","ps -efx | grep java | grep was_cname="+instanceId+" | grep -v grep"};
             Process p = Runtime.getRuntime().exec(cmd);
             BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
             String s=br.readLine();
@@ -124,18 +99,18 @@ public abstract class LatController implements Controller {
         }
     }
 
-    protected String psCheckComet(String instanceName, String classPath) throws IOException {
+    protected String psCheckComet(String instanceId, String classPath) throws IOException {
 
         String osName = System.getProperty("os.name");
 
         if(osName.toLowerCase().contains("hp-ux")){
-            String[] cmd = {"/bin/sh","-c","ps -efx | grep zodiac.name="+instanceName+" | grep \""+classPath+"\" | grep -v grep"};
+            String[] cmd = {"/bin/sh","-c","ps -efx | grep zodiac.name="+instanceId+" | grep \""+classPath+"\" | grep -v grep"};
             Process p = Runtime.getRuntime().exec(cmd);
             BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
             String s=br.readLine();
             return s;
         }else{
-            String[] cmd = {"/bin/sh","-c","ps -ef | grep zodiac.name="+instanceName+" | grep \""+classPath+"\" | grep -v grep"};
+            String[] cmd = {"/bin/sh","-c","ps -ef | grep zodiac.name="+instanceId+" | grep \""+classPath+"\" | grep -v grep"};
 
             Process p = Runtime.getRuntime().exec(cmd);
 
@@ -184,4 +159,12 @@ public abstract class LatController implements Controller {
             System.out.println("Session Server Stopped..");
         }
     }
+
+	protected InstallerServerType getInstallerServerType() {
+		return installerServerType;
+	}
+
+	protected void setInstallerServerType(InstallerServerType installerServerType) {
+		this.installerServerType = installerServerType;
+	}
 }

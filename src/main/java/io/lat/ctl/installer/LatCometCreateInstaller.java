@@ -49,13 +49,13 @@ public class LatCometCreateInstaller extends LatInstaller {
 	public void execute() throws IOException {
 		HashMap<String, String> commandMap = getServerInfoFromUser();
 
-		String serverId = commandMap.get("SERVER_ID");
+		String instanceId = commandMap.get("INSTANCE_ID");
 		String servicePort = getParameterValue(commandMap.get("SERVICE_PORT"), getDefaultValue(getServerType() + ".service-port"));
-		String secondaryServerIp = commandMap.get("SECONDARY_SERVER_IP");
+		String secondaryServerIp = getParameterValue(commandMap.get("SECONDARY_SERVER_IP"), getDefaultValue(getServerType()+".secondary-server-ip"));
 		String secondaryServicePort = getParameterValue(commandMap.get("SECONDARY_SERVICE_PORT"), getDefaultValue(getServerType() + ".secondary-service-port"));
 		String runUser = getParameterValue(commandMap.get("RUN_USER"), EnvUtil.getRunuser());
 		String installRootPath = FileUtil.getConcatPath(EnvUtil.getLatHome(), "instances", getServerType());
-		String targetPath = FileUtil.getConcatPath(installRootPath, getTargetDirName(serverId, servicePort));
+		String targetPath = FileUtil.getConcatPath(installRootPath, getTargetDirName(instanceId, servicePort));
 		String logHome = getParameterValue(commandMap.get("LOG_HOME"), FileUtil.getConcatPath(targetPath, "logs"));
 
 		if(FileUtil.exists(targetPath)){
@@ -88,20 +88,20 @@ public class LatCometCreateInstaller extends LatInstaller {
 		
 		FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "JAVA_HOME", EnvUtil.getUserJavahome());
 		FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "LAT_HOME", EnvUtil.getLatHome());
-		FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "SERVER_ID", serverId);
+		FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "INSTANCE_ID", instanceId);
 		FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "ENGN_VERSION", getEngineVersion("comet"));
 		FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "COMET_HOME", targetPath);
 		FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "RUN_USER", runUser);
 		if (!logHome.equals(FileUtil.getConcatPath(targetPath, "logs"))) {
-			FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "LOG_HOME", logHome + "/${SERVER_ID}");
+			FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "LOG_HOME", logHome + "/${INSTANCE_ID}");
 		}
-		PropertyUtil.setProperty(FileUtil.getConcatPath(targetPath, "conf", "session.conf"), "server.name", serverId);
+		PropertyUtil.setProperty(FileUtil.getConcatPath(targetPath, "conf", "session.conf"), "server.name", instanceId);
 		PropertyUtil.setProperty(FileUtil.getConcatPath(targetPath, "conf", "session.conf"), "primary.port", servicePort);
 		PropertyUtil.setProperty(FileUtil.getConcatPath(targetPath, "conf", "session.conf"), "secondary.host", secondaryServerIp);
 		PropertyUtil.setProperty(FileUtil.getConcatPath(targetPath, "conf", "session.conf"), "secondary.port", secondaryServicePort);
 
 		// update install-info.xml
-		addInstallInfo(serverId, servicePort, targetPath);
+		addInstallInfo(instanceId, servicePort, targetPath);
 
 	}
 
@@ -114,24 +114,24 @@ public class LatCometCreateInstaller extends LatInstaller {
 
 		System.out.println("+-------------------------------------------------------------------------------------");
 		System.out.println("| 1. INSTANCE_ID means business code of system and its maximum number of letters is 20. ");
-		System.out.println("|    (ex :  session-5105)                                                               ");
+		System.out.println("|    (ex :  session-5100)                                                               ");
 		System.out.print("|: ");
-		commandMap.put("SERVER_ID", checkEmpty(scan.nextLine()));
+		commandMap.put("INSTANCE_ID", checkEmpty(scan.nextLine()));
 		System.out.println("|");
 		System.out.println("| 2. SERVICE_PORT is the port number used by Session Instance.                          ");
-		System.out.println("|    (ex : 5105)                                                                        ");
+		System.out.println("|    (default : 5100)                                                                        ");
 		System.out.print("|: ");
-		commandMap.put("SERVICE_PORT", checkEmpty(scan.nextLine()));
+		commandMap.put("SERVICE_PORT", scan.nextLine());
 		System.out.println("|");
 		System.out.println("| 3. SECONDARY_SERVER_IP is the ip number communicate with Secondary Session Instance   ");
-		System.out.println("|    (ex : 127.0.0.1)                                                                   ");
+		System.out.println("|    (default : 127.0.0.1)                                                                   ");
 		System.out.print("|: ");
-		commandMap.put("SECONDARY_SERVER_IP", checkEmpty(scan.nextLine()));
+		commandMap.put("SECONDARY_SERVER_IP", scan.nextLine());
 		System.out.println("|");
-		System.out.println("| 4. SECONDARY_INSTANCE_PORT is the port number used by Secondary Session Instance.      ");
-		System.out.println("|    (ex : 5106)                                                                        ");
+		System.out.println("| 4. SECONDARY_SERVICE_PORT is the port number used by Secondary Session Instance.      ");
+		System.out.println("|    (default : 5200)                                                                        ");
 		System.out.print("|: ");
-		commandMap.put("SECONDARY_SERVICE_PORT", checkEmpty(scan.nextLine()));
+		commandMap.put("SECONDARY_SERVICE_PORT", scan.nextLine());
 		System.out.println("|");
 		System.out.println("| 5. RUN_USER is user running Session Instance                                          ");
 		System.out.println("|    (default : " + EnvUtil.getRunuser()+")");
@@ -147,7 +147,7 @@ public class LatCometCreateInstaller extends LatInstaller {
 		System.out.println("| 7. LOG_HOME is LA:T Session Instance's log directory in filesystem.                   ");
 		System.out.println("|    If you don't want to use default log directory input your custom log home prefix.");
 		System.out.println("|    (default : " + FileUtil.getConcatPath(EnvUtil.getLatHome(), "instances",
-				getServerType(), commandMap.get("SERVER_ID"), "logs")+")");
+				getServerType(), commandMap.get("INSTANCE_ID"), "logs")+")");
 		System.out.print("|: ");
 		commandMap.put("LOG_HOME", scan.nextLine());
 		System.out.println("+-------------------------------------------------------------------------------------");

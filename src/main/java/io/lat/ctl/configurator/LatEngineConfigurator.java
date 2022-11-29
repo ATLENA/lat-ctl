@@ -18,14 +18,17 @@ public class LatEngineConfigurator extends LatConfigurator {
 
         switch (configuratorCommandType){
             case LIST_ENGINES:
+            case LE:
                 EngineUtil.listEngines(getServerType());
                 break;
             case DOWNLOAD_ENGINE:
+            case DE:
                 System.out.println("Available "+getServerType()+" engine versions:");
                 EngineUtil.listEngines(getServerType());
                 downloadEngine();
                 break;
             case SWITCH_VERSION:
+            case SV:
                 switchEngineVersion();
                 break;
         }
@@ -39,13 +42,15 @@ public class LatEngineConfigurator extends LatConfigurator {
 
 
         System.out.println("=====================================================");
-        System.out.println("Select ENGN_VERSION to download. Version with '*' is already downloaded.");
+        System.out.println("Select ENGN_VERSION to download. Versions with '*' are already downloaded.");
         System.out.println("ex : 9.0.00.A.RELEASE, 2.4.02.A.RELEASE");
         System.out.print(": ");
 
 
         Scanner scan = new Scanner(System.in);
         String version = scan.nextLine();
+        
+        
 
         EngineUtil.downloadEngine(version, getServerType());
    }
@@ -59,14 +64,14 @@ public class LatEngineConfigurator extends LatConfigurator {
 
         System.out.println("Enter INSTANCE_ID to switch version");
         System.out.print(": ");
-        String serverId = scan.nextLine();
+        String instanceId = scan.nextLine();
 
         System.out.println("Enter ENGN_VERSION to switch to");
         System.out.println("ex : 9.0.00.A.RELEASE");
         System.out.print(": ");
         String version = scan.nextLine();
 
-        EngineUtil.switchEngineVersion(serverId, version, getServerType());
+        EngineUtil.switchEngineVersion(instanceId, version, getServerType());
    }
 
 }

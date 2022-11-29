@@ -40,6 +40,14 @@ public abstract class LatInstaller implements Installer {
 	private InstallerCommandType installerCommandType;
 	private InstallerServerType installerServerType;
 
+	protected InstallerServerType getInstallerServerType() {
+		return installerServerType;
+	}
+
+	protected void setInstallerServerType(InstallerServerType installerServerType) {
+		this.installerServerType = installerServerType;
+	}
+
 	private String depotPath;
 
 	private Map<String, String> resultMap;
@@ -181,6 +189,10 @@ public abstract class LatInstaller implements Installer {
 		map.put("nginx.service-port", InstallConfigUtil.getProperty("nginx.service-port.default", "8080"));
 		// TODO
 
+		map.put("comet.service-port", InstallConfigUtil.getProperty("comet.service-port.default", "5100"));
+		map.put("comet.secondary-service-port", InstallConfigUtil.getProperty("comet.secondary-service-port.default", "5200"));
+		map.put("comet.secondary-server-ip",  InstallConfigUtil.getProperty("comet.secondary-server-ip.default","127.0.0.1"));
+		
 		return map;
 	}
 
@@ -244,7 +256,7 @@ public abstract class LatInstaller implements Installer {
 		Scanner scan = new Scanner(System.in);
 
 		while(input.isEmpty()){
-			System.out.println("| Invalid input. Please enter again.");
+			System.out.println("|Invalid input. Please enter again.");
 			System.out.print("|: ");
 			input = scan.nextLine();
 		}
