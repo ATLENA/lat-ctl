@@ -40,4 +40,4 @@ jobs:
 #          package-name: 'io.openlena.lena-ctl'
 #          token: ${{ secrets.GH_MVN_REPO_PAT }}
       - name: Deploy with Maven
-        run: mvn -B deploy
+        run: mvn -B deploy -DskipTests
