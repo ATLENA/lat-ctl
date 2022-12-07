@@ -96,7 +96,7 @@ public class LatInstanceDeleteInstaller extends LatInstaller {
 					FileUtil.deleteDirWithExceptDir(new File(targetPath), new File(loghome));
 					
 					System.out.println("Delete Target Home : " + targetPath);
-					System.out.println("Delete Log Home : " + loghome);
+					System.out.println("Don't Delete Log Home : " + loghome);
 					
 				} else {
 					// 1. server home 삭제
@@ -146,7 +146,7 @@ public class LatInstanceDeleteInstaller extends LatInstaller {
 		System.out.print("|: ");
 		commandMap.put("INSTANCE_ID", scan.nextLine());
 		
-		if(commandMap.get("INSTANCE_ID").compareTo("1")>0 && commandMap.get("INSTANCE_ID").compareTo(elementList.size()+"")<=0) {
+		if(commandMap.get("INSTANCE_ID").compareTo("1")>=0 && commandMap.get("INSTANCE_ID").compareTo(elementList.size()+"")<=0) {
 			commandMap.put("INSTANCE_ID", XmlUtil.getValueByTagName(elementList.get(Integer.parseInt(commandMap.get("INSTANCE_ID"))-1),"id"));
 		}
 		System.out.println("| 2. LOG_HOME_DELETE_FLAG : whether to delete LOG Home ['Y','N','D'] ('D' is default) ");

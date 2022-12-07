@@ -47,61 +47,65 @@ public class LatCometCreateInstaller extends LatInstaller {
 	 * Logic that actually creates the server
 	 */
 	public void execute() throws IOException {
-		HashMap<String, String> commandMap = getServerInfoFromUser();
-
-		String instanceId = commandMap.get("INSTANCE_ID");
-		String servicePort = getParameterValue(commandMap.get("SERVICE_PORT"), getDefaultValue(getServerType() + ".service-port"));
-		String secondaryServerIp = getParameterValue(commandMap.get("SECONDARY_SERVER_IP"), getDefaultValue(getServerType()+".secondary-server-ip"));
-		String secondaryServicePort = getParameterValue(commandMap.get("SECONDARY_SERVICE_PORT"), getDefaultValue(getServerType() + ".secondary-service-port"));
-		String runUser = getParameterValue(commandMap.get("RUN_USER"), EnvUtil.getRunuser());
-		String installRootPath = FileUtil.getConcatPath(EnvUtil.getLatHome(), "instances", getServerType());
-		String targetPath = FileUtil.getConcatPath(installRootPath, getTargetDirName(instanceId, servicePort));
-		String logHome = getParameterValue(commandMap.get("LOG_HOME"), FileUtil.getConcatPath(targetPath, "logs"));
-
-		if(FileUtil.exists(targetPath)){
-			LOGGER.error("["+targetPath+"] directory already exists. Remove the directory and try again.");
-			throw new LatException("["+targetPath+"] directory already exists. Remove the directory and try again.");
+		try {
+			HashMap<String, String> commandMap = getServerInfoFromUser();
+	
+			String instanceId = commandMap.get("INSTANCE_ID");
+			String servicePort = getParameterValue(commandMap.get("SERVICE_PORT"), getDefaultValue(getServerType() + ".service-port"));
+			String secondaryServerIp = getParameterValue(commandMap.get("SECONDARY_SERVER_IP"), getDefaultValue(getServerType()+".secondary-server-ip"));
+			String secondaryServicePort = getParameterValue(commandMap.get("SECONDARY_SERVICE_PORT"), getDefaultValue(getServerType() + ".secondary-service-port"));
+			String runUser = getParameterValue(commandMap.get("RUN_USER"), EnvUtil.getRunuser());
+			String installRootPath = FileUtil.getConcatPath(EnvUtil.getLatHome(), "instances", getServerType());
+			String targetPath = FileUtil.getConcatPath(installRootPath, getTargetDirName(instanceId, servicePort));
+			String logHome = getParameterValue(commandMap.get("LOG_HOME"), FileUtil.getConcatPath(targetPath, "logs"));
+	
+			if(FileUtil.exists(targetPath)){
+				//LOGGER.error("["+targetPath+"] directory already exists. Remove the directory and try again.");
+				throw new LatException("["+targetPath+"] directory already exists. Remove the directory and try again.");
+			}
+			// validate options
+			if (!StringUtil.isNumeric(servicePort)) {
+				//LOGGER.error("Service Port should be numeric. : "+servicePort);
+				throw new LatException("Service Port should be numeric.");
+			}
+			if (!StringUtil.isNumeric(secondaryServicePort)) {
+				//LOGGER.error("Service Port should be numeric. : "+secondaryServicePort);
+				throw new LatException("Service Port should be numeric.");
+			}
+	
+			// installPath check
+			if (FileUtil.exists(targetPath)) {
+				//LOGGER.error(targetPath + " already exists.");
+				throw new LatException(targetPath + " already exists.");
+			}
+	
+			// run user check
+			if ("root".equals(runUser) && !EnvUtil.isRootUserAllowed()) {
+				//LOGGER.error(getServerType() + " can't run as root user.");
+				throw new LatException(getServerType() + " can't run as root user.");
+			}
+	
+			FileUtil.copyDirectory(getDepotPath(), targetPath);
+			
+			FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "JAVA_HOME", EnvUtil.getUserJavahome());
+			FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "LAT_HOME", EnvUtil.getLatHome());
+			FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "INSTANCE_ID", instanceId);
+			FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "ENGN_VERSION", getEngineVersion("comet"));
+			FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "COMET_HOME", targetPath);
+			FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "RUN_USER", runUser);
+			if (!logHome.equals(FileUtil.getConcatPath(targetPath, "logs"))) {
+				FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "LOG_HOME", logHome + "/${INSTANCE_ID}");
+			}
+			PropertyUtil.setProperty(FileUtil.getConcatPath(targetPath, "conf", "session.conf"), "server.name", instanceId);
+			PropertyUtil.setProperty(FileUtil.getConcatPath(targetPath, "conf", "session.conf"), "primary.port", servicePort);
+			PropertyUtil.setProperty(FileUtil.getConcatPath(targetPath, "conf", "session.conf"), "secondary.host", secondaryServerIp);
+			PropertyUtil.setProperty(FileUtil.getConcatPath(targetPath, "conf", "session.conf"), "secondary.port", secondaryServicePort);
+	
+			// update install-info.xml
+			addInstallInfo(instanceId, servicePort, targetPath);
+		}catch(Throwable e) {
+			LOGGER.error(e.getMessage());
 		}
-		// validate options
-		if (!StringUtil.isNumeric(servicePort)) {
-			LOGGER.error("Service Port should be numeric. : "+servicePort);
-			throw new LatException("Service Port should be numeric.");
-		}
-		if (!StringUtil.isNumeric(secondaryServicePort)) {
-			LOGGER.error("Service Port should be numeric. : "+secondaryServicePort);
-			throw new LatException("Service Port should be numeric.");
-		}
-
-		// installPath check
-		if (FileUtil.exists(targetPath)) {
-			LOGGER.error(targetPath + " already exists.");
-			throw new LatException(targetPath + " already exists.");
-		}
-
-		// run user check
-		if ("root".equals(runUser) && !EnvUtil.isRootUserAllowed()) {
-			LOGGER.error(getServerType() + " can't run as root user.");
-			throw new LatException(getServerType() + " can't run as root user.");
-		}
-
-		FileUtil.copyDirectory(getDepotPath(), targetPath);
-		
-		FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "JAVA_HOME", EnvUtil.getUserJavahome());
-		FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "LAT_HOME", EnvUtil.getLatHome());
-		FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "INSTANCE_ID", instanceId);
-		FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "ENGN_VERSION", getEngineVersion("comet"));
-		FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "COMET_HOME", targetPath);
-		FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "RUN_USER", runUser);
-		if (!logHome.equals(FileUtil.getConcatPath(targetPath, "logs"))) {
-			FileUtil.setShellVariable(FileUtil.getConcatPath(targetPath, "env.sh"), "LOG_HOME", logHome + "/${INSTANCE_ID}");
-		}
-		PropertyUtil.setProperty(FileUtil.getConcatPath(targetPath, "conf", "session.conf"), "server.name", instanceId);
-		PropertyUtil.setProperty(FileUtil.getConcatPath(targetPath, "conf", "session.conf"), "primary.port", servicePort);
-		PropertyUtil.setProperty(FileUtil.getConcatPath(targetPath, "conf", "session.conf"), "secondary.host", secondaryServerIp);
-		PropertyUtil.setProperty(FileUtil.getConcatPath(targetPath, "conf", "session.conf"), "secondary.port", secondaryServicePort);
-
-		// update install-info.xml
-		addInstallInfo(instanceId, servicePort, targetPath);
 
 	}
 

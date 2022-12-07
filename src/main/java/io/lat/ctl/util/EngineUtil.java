@@ -47,6 +47,10 @@ public class EngineUtil {
         String envPath = FileUtil.getConcatPath(installRootPath, serverId, "env.sh");
         String currentVersion = FileUtil.getShellVariableString(envPath, "ENGN_VERSION");
         currentVersion = currentVersion.substring(13);
+        
+        if(version.startsWith(serverType+"-")) {
+        	version = version.substring(serverType.length()+1);
+        }
 
 
         /*
@@ -160,6 +164,9 @@ public class EngineUtil {
             System.out.println(left.next().getName()+" *");
         }
     }
+    
+    
+    
     public static List<String> getEnginesFromGithub(String serverType) throws IOException {
         String URL = "https://api.github.com/repos/ATLENA/lat-"+serverType+"-runtimes/git/trees/main";
 

@@ -62,7 +62,7 @@ public class LatApacheCreateInstaller extends LatInstaller {
 
 
 			if(FileUtil.exists(targetPath)){
-				LOGGER.error("["+targetPath+"] directory already exists. Remove the directory and try again.");
+				//LOGGER.error("["+targetPath+"] directory already exists. Remove the directory and try again.");
 				throw new LatException("["+targetPath+"] directory already exists. Remove the directory and try again.");
 			}
 
@@ -84,7 +84,8 @@ public class LatApacheCreateInstaller extends LatInstaller {
 			addInstallInfo(instanceId, servicePort, targetPath);
 		}
 		catch (Throwable e) {
-			throw new LatException(e);
+			//throw new LatException(e);
+			LOGGER.error(e.getMessage());
 		}
 	}
 
