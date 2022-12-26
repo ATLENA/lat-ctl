@@ -54,7 +54,7 @@ public class InstallInfoUtil {
 		Document document = XmlUtil.createDocument(argoInstallFilePath);
 		XPath xpath = XPathFactory.newInstance().newXPath();
 		try {
-			if (existsServer(server.getId())) {
+			if (existsServer(server.getId(), server.getType())) {
 				throw new LatException("Instance id alreay exists. '" + server.getId() + "'");
 			}
 
@@ -84,18 +84,19 @@ public class InstallInfoUtil {
 	 * install-info.xml파일에서 서버 설치정보를 삭제한다. 
 	 * @param id 서버ID
 	 */
-	public static void removeInstallInfo(String id){
+	public static void removeInstallInfo(String id, InstallerServerType serverType){
 		String argoInstallFilePath = getInstallInfoFilePath();
 		
-		if(!existsServer(id)){
+		if(!existsServer(id, serverType.getServerType())){
 			throw new LatException("Instance id doesn't exist. '" +  id + "'");
 		}
 		
 		Document document = XmlUtil.createDocument(argoInstallFilePath);
 		XPath xpath = XPathFactory.newInstance().newXPath();
+		XpathVariable[] variables = {new XpathVariable("id", id), new XpathVariable("type", serverType.getServerType())};
 		
 		try {
-			Element serverElement = (Element)XmlUtil.xpathEvaluate("//install/servers/server[id=$id]", document, XPathConstants.NODE, xpath, new XpathVariable("id", id));
+			Element serverElement = (Element)XmlUtil.xpathEvaluate("//install/servers/server[id=$id and type=$type]", document, XPathConstants.NODE, xpath, variables);
 			
 			serverElement.getParentNode().removeChild(serverElement);
 			
@@ -120,8 +121,8 @@ public class InstallInfoUtil {
 	 * @param instanceId the instance id
 	 * @return true if the server exists , otherwise false
 	 */
-	public static boolean existsServer(String instanceId) {
-		if (!StringUtil.isBlank(getServerInstallPath(instanceId))) {
+	public static boolean existsServer(String instanceId, String serverType) {
+		if (!StringUtil.isBlank(getServerInstallPath(instanceId, InstallerServerType.getInstallServerType(serverType)))) {
 			return true;
 		}
 
@@ -134,8 +135,8 @@ public class InstallInfoUtil {
 	 * @param instanceId the instance id
 	 * @return server install path
 	 */
-	public static String getServerInstallPath(String instanceId) {
-		return XmlUtil.getValueByTagName(getServerElement(instanceId), "path");
+	public static String getServerInstallPath(String instanceId, InstallerServerType serverType) {
+		return XmlUtil.getValueByTagName(getServerElement(instanceId, serverType), "path");
 	}
 	
 	public static ArrayList<Element> getServerByType(InstallerServerType serverType) {
@@ -231,14 +232,16 @@ public class InstallInfoUtil {
 	 * @param instanceId the instance Id
 	 * @return element object
 	 */
-	private static Element getServerElement(String instanceId) {
+	private static Element getServerElement(String instanceId, InstallerServerType serverType) {
 		String argoInstallFilePath = getInstallInfoFilePath();
 
 		Document document = XmlUtil.createDocument(argoInstallFilePath);
 		XPath xpath = XPathFactory.newInstance().newXPath();
 		Element element = null;
+		XpathVariable[] variables = {new XpathVariable("id", instanceId), new XpathVariable("type", serverType.getServerType())};
+		
 		try {
-			element = (Element) XmlUtil.xpathEvaluate("//install/servers/server[id=$id]", document, XPathConstants.NODE, xpath, new XpathVariable("id", instanceId));
+			element = (Element) XmlUtil.xpathEvaluate("//install/servers/server[id=$id and type=$type]", document, XPathConstants.NODE, xpath, variables);
 		}
 		catch (XPathExpressionException e) {
 			throw new LatException("Errors in release xml file", e);
@@ -252,8 +255,8 @@ public class InstallInfoUtil {
 	 * @param instanceId
 	 * @return port
 	 */
-	public static String getServicePort(String instanceId) {
-		return XmlUtil.getValueByTagName(getServerElement(instanceId), "port");
+	public static String getServicePort(String instanceId, InstallerServerType serverType) {
+		return XmlUtil.getValueByTagName(getServerElement(instanceId, serverType), "port");
 	}
 	
 	/**
@@ -261,8 +264,8 @@ public class InstallInfoUtil {
 	 * @param instanceId
 	 * @return
 	 */
-	public static Server getServer(String instanceId){
-		Element serverElement = getServerElement(instanceId);
+	public static Server getServer(String instanceId, InstallerServerType serverType){
+		Element serverElement = getServerElement(instanceId, serverType);
 		if(serverElement == null){
 			throw new LatException("There is no installed server '" + instanceId + "'");
 		}

@@ -3,10 +3,9 @@ package io.lat.ctl.util;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-
-import io.lat.ctl.configurator.ConfiguratorMapper;
 import io.lat.ctl.exception.LatException;
 import io.lat.ctl.installer.LatInstaller;
+import io.lat.ctl.type.InstallerServerType;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.compress.archivers.ArchiveInputStream;
 import org.apache.commons.compress.archivers.ArchiveStreamFactory;
@@ -15,8 +14,6 @@ import org.apache.commons.compress.compressors.CompressorException;
 import org.apache.commons.compress.compressors.CompressorInputStream;
 import org.apache.commons.compress.compressors.CompressorStreamFactory;
 import org.apache.commons.compress.utils.IOUtils;
-//import org.apache.commons.httpclient.HttpClient;
-//import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.http.HttpResponse;
@@ -70,7 +67,7 @@ public class EngineUtil {
 
 
          */
-        String targetPath = InstallInfoUtil.getServerInstallPath(serverId);
+        String targetPath = InstallInfoUtil.getServerInstallPath(serverId, InstallerServerType.getInstallServerType(serverType));
 
         if (StringUtil.isBlank(targetPath)) {
             throw new LatException(serverId + " doesn't exist.");

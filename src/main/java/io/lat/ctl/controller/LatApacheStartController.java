@@ -4,6 +4,8 @@ import io.lat.ctl.type.ControllerCommandType;
 import io.lat.ctl.type.InstallerServerType;
 import io.lat.ctl.util.EnvUtil;
 import io.lat.ctl.util.FileUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -14,6 +16,8 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class LatApacheStartController extends LatController{
+    private static final Logger LOGGER = LoggerFactory.getLogger(LatApacheStartController.class);
+
     public LatApacheStartController(ControllerCommandType controllerCommandType, InstallerServerType installerServerType, String instanceName) {
         super(controllerCommandType, installerServerType, instanceName);
     }
@@ -67,6 +71,7 @@ public class LatApacheStartController extends LatController{
             }
         }
 
+        LOGGER.debug("Log file rotating...");
         File[] files = new File(logHome).listFiles();
         for(File f:files){
             if(f.getName().contains("error_")  && !f.getName().contains(logDate)) {
@@ -81,12 +86,14 @@ public class LatApacheStartController extends LatController{
 
 
 
+        LOGGER.debug("library link creating..");
 
         if(osName.equals("Linux") && !FileUtil.exists(FileUtil.getConcatPath("/lib64","libpcre.so.0")) && !FileUtil.exists(FileUtil.getConcatPath(engnHome,"lib","libpcre.so.0"))){
             Files.createSymbolicLink(Paths.get(engnHome, "lib", "libpcre.so.0"),Paths.get("/lib64","libpcre.so.1"));
         }
 
 
+        LOGGER.debug("apachectl temporary file creating..");
 
 
         BufferedReader reader = null;
@@ -120,22 +127,28 @@ public class LatApacheStartController extends LatController{
         }
 
         FileUtil.chmod755(engnHome+"/bin/apachectl_temp");
+        LOGGER.debug("apachectl temporary file created");
 
 
         String[] cmd = {"/bin/sh","-c",engnHome+"/bin/apachectl_temp -f "+installPath+"/conf/httpd.conf -k start -D"+mpmType+" "+extModuleDefines};
 
         Process p = Runtime.getRuntime().exec(cmd);
 
+        LOGGER.debug("Starting apache...");
+
         BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
         String s="";
 
         while((s=br.readLine()) != null){
             System.out.println(s);
+            LOGGER.debug(s);
 
         }
 
+        LOGGER.debug("Deleting temporary file");
         FileUtil.delete(engnHome+"/bin/apachectl_temp");
 
+        LOGGER.debug("Apache started");
 
     }
 }

@@ -6,15 +6,14 @@ import io.lat.ctl.type.InstallerServerType;
 import io.lat.ctl.util.EngineUtil;
 import io.lat.ctl.util.InstallInfoUtil;
 import io.lat.ctl.util.XmlUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Element;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Scanner;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Element;
 
 public class LatEngineConfigurator extends LatConfigurator {
     private ConfiguratorCommandType configuratorCommandType;
@@ -97,7 +96,7 @@ public class LatEngineConfigurator extends LatConfigurator {
 		}
         
         
-        if(!InstallInfoUtil.existsServer(instanceId)) {
+        if(!InstallInfoUtil.existsServer(instanceId, getServerType())) {
         	
         	throw new LatException(instanceId+" doesn't exist. Check the INSTANCE_ID again.");
         }

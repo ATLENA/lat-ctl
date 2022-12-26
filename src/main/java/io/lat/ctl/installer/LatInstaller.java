@@ -92,8 +92,8 @@ public abstract class LatInstaller implements Installer {
 	 * install-info.xml파일에서 서버 설치정보를 삭제한다. 
 	 * @param serverId 서버ID
 	 */
-	protected void removeInstallInfo(String serverId) {
-		InstallInfoUtil.removeInstallInfo(serverId);
+	protected void removeInstallInfo(String serverId, InstallerServerType serverType) {
+		InstallInfoUtil.removeInstallInfo(serverId, serverType);
 	}
 	
 	/**

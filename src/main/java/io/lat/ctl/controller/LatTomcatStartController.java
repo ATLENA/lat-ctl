@@ -4,6 +4,8 @@ import io.lat.ctl.type.ControllerCommandType;
 import io.lat.ctl.type.InstallerServerType;
 import io.lat.ctl.util.EnvUtil;
 import io.lat.ctl.util.FileUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.time.LocalDate;
@@ -12,6 +14,8 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class LatTomcatStartController extends LatController{
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(LatTomcatStartController.class);
 
     public LatTomcatStartController(ControllerCommandType controllerCommandType, InstallerServerType installerServerType, String instanceName) {
         super(controllerCommandType, installerServerType, instanceName);
@@ -65,7 +69,7 @@ public class LatTomcatStartController extends LatController{
             String s=br.readLine();
 
             if(s!=null){
-                System.out.println("#### ERROR. "+ instanceId +" is already running. exiting.. ####");
+                LOGGER.error("#### ERROR. "+ instanceId +" is already running. exiting.. ####");
                 return;
             }
         }

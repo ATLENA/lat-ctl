@@ -4,11 +4,10 @@ import io.lat.ctl.common.CommandCtl;
 import io.lat.ctl.type.ControllerCommandType;
 import io.lat.ctl.type.InstallerServerType;
 import io.lat.ctl.util.InstallInfoUtil;
-
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 public class ControllerMapper {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ControllerMapper.class);
@@ -39,7 +38,7 @@ public class ControllerMapper {
             System.exit(1);
         }
         
-        if(!InstallInfoUtil.existsServer(instanceId)) {
+        if(!InstallInfoUtil.existsServer(instanceId, serverType)) {
         	LOGGER.error(instanceId+" does not exist. Check the INSTANCE ID again.");
         	System.exit(1);
         }

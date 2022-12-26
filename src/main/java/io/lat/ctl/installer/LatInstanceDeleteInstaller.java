@@ -44,7 +44,7 @@ public class LatInstanceDeleteInstaller extends LatInstaller {
 			throw new LatException("INSTANCE_ID doesn't match.");
 		}
 
-		String targetPath = InstallInfoUtil.getServerInstallPath(instanceId);
+		String targetPath = InstallInfoUtil.getServerInstallPath(instanceId, getInstallerServerType());
 		LOGGER.debug("targetPath = "+targetPath);
 		
 		if (StringUtil.isBlank(targetPath)) {
@@ -58,7 +58,7 @@ public class LatInstanceDeleteInstaller extends LatInstaller {
 			throw new LatException(instanceId + " is running.");
 		}
 
-		Server srcServer = InstallInfoUtil.getServer(instanceId);
+		Server srcServer = InstallInfoUtil.getServer(instanceId, getInstallerServerType());
 		if (srcServer.getType().equals(getServerType())) {
 			try {
 				//String loghome = EnvUtil.getLogHome();
@@ -114,7 +114,7 @@ public class LatInstanceDeleteInstaller extends LatInstaller {
 				}
 
 				// update install-info.xml
-				InstallInfoUtil.removeInstallInfo(instanceId);
+				InstallInfoUtil.removeInstallInfo(instanceId, getInstallerServerType());
 			} catch (Exception e) {
 				throw new LatException(e);
 			}
