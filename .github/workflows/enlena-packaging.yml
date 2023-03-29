@@ -13,7 +13,7 @@ jobs:
       - name: Get file
           env:
             TOKEN: ${{ secrets.repo_token }}
-          run: |
+          run:
             curl -H "Authorization: token ${TOKEN}" https://github.com/ATLENA/lat-tomcat-runtimes/blob/main/tomcat-9.0.46.A.RELEASE.tar.gz
 #      - uses: actions/checkout@v2
 #      - name: Set up JDK 8
