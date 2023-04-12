@@ -1,0 +1,48 @@
+name: Enlena packaging
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+jobs:
+  build:
+    name: Get file test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get file
+        env:
+          TOKEN: ${{ secrets.GH_MVN_REPO_USER_INFO }}
+        run: |
+          curl -H "Authorization: token ${TOKEN}" https://github.com/ATLENA/lat-tomcat-runtimes/blob/main/tomcat-9.0.46.A.RELEASE.tar.gz
+#      - uses: actions/checkout@v2
+#      - name: Set up JDK 8
+#        uses: actions/setup-java@v2
+#        with:
+#          java-version: '8'
+#          distribution: 'adopt'
+#      - name: maven-settings-xml-action
+#        uses: whelk-io/maven-settings-xml-action@v14
+#        with:
+#          repositories: '[{ "id": "github", "url": "https://maven.pkg.github.com/atlena/*", "snapshots": { "enabled": "true" } }]'
+#          servers: ${{secrets.GH_MVN_REPO_USER_INFO}}
+#          #servers: '[{"server":{"id":"github", "username":"seosej@gmail.com", "password":"${{secrets.GITHUB_TOKEN}}"}}]'
+#          #servers: '[{"server":{"id":"github", "username":"seosej@gmail.com", "password":"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"}}]'
+#          #servers:
+#          #  - server:
+#          #    - id: "github"
+#          #      username: "seosej@gmail.com"
+#          #      password: "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"
+#      - name: check settings.xml
+#        run: cat ~/.m2/settings.xml
+#      - name: Packaging with Maven
+#        run: mvn -B package
+##      - uses: actions/delete-package-versions@v1
+##        continue-on-error: true
+##        with:
+##          owner: 'openlena'
+##          repo: 'lena-ctl'
+##          package-name: 'io.openlena.lena-ctl'
+##          token: ${{ secrets.GH_MVN_REPO_PAT }}
+#      - name: Deploy with Maven
+#        run: mvn -B deploy
