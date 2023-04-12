@@ -19,6 +19,7 @@ import io.lat.ctl.exception.LatException;
 import io.lat.ctl.type.InstallerCommandType;
 import io.lat.ctl.type.InstallerServerType;
 import io.lat.ctl.util.*;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -28,14 +29,13 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Abstract class for server create installer
  * @author Erick Yu
  *
  */
+
+@Slf4j
 public abstract class LatInstaller implements Installer {
 	private InstallerCommandType installerCommandType;
 	private InstallerServerType installerServerType;
@@ -52,8 +52,6 @@ public abstract class LatInstaller implements Installer {
 
 	private Map<String, String> resultMap;
 	private Map<String, String> defaultValueMap;
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(LatInstaller.class);
 
 	/**
 	 * @param installerCommandType command
@@ -244,7 +242,7 @@ public abstract class LatInstaller implements Installer {
 		String s=br.readLine();
 
 		if(s==null){
-			LOGGER.error(serverType+" engine is not installed");
+			log.error(serverType+" engine is not installed");
 			throw new LatException(serverType+" engine is not installed");
 		} else{
 			return s.substring(s.indexOf("-") + 1);

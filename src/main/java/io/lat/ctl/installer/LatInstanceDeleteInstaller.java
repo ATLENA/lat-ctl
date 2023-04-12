@@ -4,11 +4,9 @@ import io.lat.ctl.common.vo.Server;
 import io.lat.ctl.exception.LatException;
 import io.lat.ctl.type.InstallerCommandType;
 import io.lat.ctl.type.InstallerServerType;
-import io.lat.ctl.util.EnvUtil;
-import io.lat.ctl.util.FileUtil;
-import io.lat.ctl.util.InstallInfoUtil;
-import io.lat.ctl.util.StringUtil;
-import io.lat.ctl.util.XmlUtil;
+import io.lat.ctl.util.*;
+import lombok.extern.slf4j.Slf4j;
+import org.w3c.dom.Element;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -16,16 +14,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Element;
-
 /**
  * lat 인스턴스를 삭제하는 공통 Installer
  */
+
+@Slf4j
 public class LatInstanceDeleteInstaller extends LatInstaller {
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(LatInstanceDeleteInstaller.class);
 
 	public LatInstanceDeleteInstaller(InstallerCommandType installerCommandType,
 			InstallerServerType installerServerType) {
@@ -40,21 +34,21 @@ public class LatInstanceDeleteInstaller extends LatInstaller {
 		String logHomeDeleteFlag = getParameterValue(commandMap.get("LOG_HOME_DELETE_FLAG"), "D");
 
 		if(!confirm(instanceId)){
-			LOGGER.error("INSTANCE_ID doesn't match.");
+			log.error("INSTANCE_ID doesn't match.");
 			throw new LatException("INSTANCE_ID doesn't match.");
 		}
 
 		String targetPath = InstallInfoUtil.getServerInstallPath(instanceId, getInstallerServerType());
-		LOGGER.debug("targetPath = "+targetPath);
+		log.debug("targetPath = "+targetPath);
 		
 		if (StringUtil.isBlank(targetPath)) {
-			LOGGER.error(instanceId + " doesn't exist.");
+			log.error(instanceId + " doesn't exist.");
 			throw new LatException(instanceId + " doesn't exist.");
 		}
 
 		// 서버가 기동중인 경우 삭제할 수 없음
 		if (isRunning(targetPath, "ps")) {
-			LOGGER.error(instanceId + " is running. Retry after the instance is stopped.");
+			log.error(instanceId + " is running. Retry after the instance is stopped.");
 			throw new LatException(instanceId + " is running.");
 		}
 
@@ -101,7 +95,7 @@ public class LatInstanceDeleteInstaller extends LatInstaller {
 				} else {
 					// 1. server home 삭제
 					FileUtil.delete(targetPath);
-					LOGGER.debug("The instance is deleted : " + targetPath);
+					log.debug("The instance is deleted : " + targetPath);
 					System.out.println("The instance is deleted : " + targetPath);
 					
 					if ("Y".equalsIgnoreCase(logHomeDeleteFlag)) {
@@ -120,7 +114,7 @@ public class LatInstanceDeleteInstaller extends LatInstaller {
 			}
 
 		} else {
-			LOGGER.error("Server Type matching error");
+			log.error("Server Type matching error");
 			throw new LatException("Server Type matching error");
 		}
 	}

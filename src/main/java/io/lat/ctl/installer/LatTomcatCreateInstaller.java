@@ -21,8 +21,7 @@ import io.lat.ctl.util.CipherUtil;
 import io.lat.ctl.util.EnvUtil;
 import io.lat.ctl.util.FileUtil;
 import io.lat.ctl.util.XmlUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -40,11 +39,9 @@ import java.util.Scanner;
  * @author Erick Yu
  *
  */
+
+@Slf4j
 public class LatTomcatCreateInstaller extends LatInstaller {
-
-	//private static final Logger LOGGER = LoggerFactory.getLogger(LatTomcatCreateInstaller.class);
-
-	private Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
 	public LatTomcatCreateInstaller(InstallerCommandType installerCommandType, InstallerServerType installerServerType) {
 		super(installerCommandType, installerServerType);
@@ -69,7 +66,7 @@ public class LatTomcatCreateInstaller extends LatInstaller {
 
 
 		if(FileUtil.exists(targetPath)){
-			LOGGER.error("["+targetPath+"] directory already exists. Remove the directory and try again.");
+			log.error("["+targetPath+"] directory already exists. Remove the directory and try again.");
 			throw new LatException("["+targetPath+"] directory already exists. Remove the directory and try again.");
 		}
 
@@ -122,7 +119,7 @@ public class LatTomcatCreateInstaller extends LatInstaller {
 				}
 			}
 			catch (XPathExpressionException e) {
-				LOGGER.debug("fail in setting sample application docbase");
+				log.debug("fail in setting sample application docbase");
 			}
 		}
 	}

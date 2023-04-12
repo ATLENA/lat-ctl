@@ -4,17 +4,16 @@ import io.lat.ctl.common.CommandCtl;
 import io.lat.ctl.type.ControllerCommandType;
 import io.lat.ctl.type.InstallerServerType;
 import io.lat.ctl.util.InstallInfoUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
+@Slf4j
 public class ControllerMapper {
-	private static final Logger LOGGER = LoggerFactory.getLogger(ControllerMapper.class);
 
     public static Controller getController(List<String> commandList) throws Exception {
     	if(commandList.size()!=3) {
-    		LOGGER.error("Invalid command. Check the usage again.\n");
+    		log.error("Invalid command. Check the usage again.\n");
     		//System.out.println("Usage: latctl.sh [COMMAND] [SERVER_TYPE] [INSTANCE_ID]\n");
     		
     		CommandCtl.printHelpPage();
@@ -25,7 +24,7 @@ public class ControllerMapper {
         String serverType = commandList.get(1);
         String instanceId = commandList.get(2);
     	
-        LOGGER.debug("Start [latctl.sh "+command+" "+serverType+" "+instanceId+"]");
+        log.debug("Start [latctl.sh "+command+" "+serverType+" "+instanceId+"]");
         		
         ControllerCommandType controllerCommandType = null;
         InstallerServerType controllerServerType = null;
@@ -39,7 +38,7 @@ public class ControllerMapper {
         }
         
         if(!InstallInfoUtil.existsServer(instanceId, serverType)) {
-        	LOGGER.error(instanceId+" does not exist. Check the INSTANCE ID again.");
+        	log.error(instanceId+" does not exist. Check the INSTANCE ID again.");
         	System.exit(1);
         }
 

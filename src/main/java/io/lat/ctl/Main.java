@@ -21,8 +21,7 @@ import io.lat.ctl.controller.Controller;
 import io.lat.ctl.controller.ControllerMapper;
 import io.lat.ctl.installer.Installer;
 import io.lat.ctl.installer.InstallerMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,9 +31,10 @@ import java.util.List;
  * @author Erick Yu
  *
  */
+
+@Slf4j
 public class Main {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 	public static void main(String[] args) throws Exception {
 
 

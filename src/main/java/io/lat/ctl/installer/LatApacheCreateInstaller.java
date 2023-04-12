@@ -21,21 +21,20 @@ import io.lat.ctl.type.InstallerCommandType;
 import io.lat.ctl.type.InstallerServerType;
 import io.lat.ctl.util.EnvUtil;
 import io.lat.ctl.util.FileUtil;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Scanner;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Installer that can create LA:T Apache Webserver.
  * @author Erick Yu
  *
  */
+
+@Slf4j
 public class LatApacheCreateInstaller extends LatInstaller {
-	private static final Logger LOGGER = LoggerFactory.getLogger(LatApacheCreateInstaller.class);
 
 	public LatApacheCreateInstaller(InstallerCommandType installerCommandType, InstallerServerType installerServerType) {
 		super(installerCommandType, installerServerType);
@@ -62,7 +61,7 @@ public class LatApacheCreateInstaller extends LatInstaller {
 
 
 			if(FileUtil.exists(targetPath)){
-				//LOGGER.error("["+targetPath+"] directory already exists. Remove the directory and try again.");
+				//log.error("["+targetPath+"] directory already exists. Remove the directory and try again.");
 				throw new LatException("["+targetPath+"] directory already exists. Remove the directory and try again.");
 			}
 
@@ -85,7 +84,7 @@ public class LatApacheCreateInstaller extends LatInstaller {
 		}
 		catch (Throwable e) {
 			//throw new LatException(e);
-			LOGGER.error(e.getMessage());
+			log.error(e.getMessage());
 		}
 	}
 

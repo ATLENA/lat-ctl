@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import io.lat.ctl.exception.LatException;
 import io.lat.ctl.installer.LatInstaller;
 import io.lat.ctl.type.InstallerServerType;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.compress.archivers.ArchiveInputStream;
 import org.apache.commons.compress.archivers.ArchiveStreamFactory;
@@ -21,8 +22,6 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.URL;
@@ -33,8 +32,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+@Slf4j
 public class EngineUtil {
-	private static final Logger LOGGER = LoggerFactory.getLogger(EngineUtil.class);
 
     public static void switchEngineVersion(String serverId, String version, String serverType){
 
@@ -82,7 +81,7 @@ public class EngineUtil {
         System.out.println("CURRENT VERSION: "+currentVersion);
         
         if(version.equals(currentVersion)) {
-        	LOGGER.error(version+" is current version.");
+        	log.error(version+" is current version.");
         	return;
         	//throw new LatException(version+" is current version.");
         }

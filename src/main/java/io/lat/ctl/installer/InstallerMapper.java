@@ -20,6 +20,7 @@ import io.lat.ctl.type.InstallerServerType;
 
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,9 +29,10 @@ import org.slf4j.LoggerFactory;
  * @author Erick Yu
  *
  */
+
+@Slf4j
 public class InstallerMapper {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(InstallerMapper.class);
 	/**
 	 * @param commandList
 	 * @return Server create Installer
@@ -39,7 +41,7 @@ public class InstallerMapper {
 		String command = commandList.get(0);
 		String serverType = commandList.get(1);
 		
-		LOGGER.debug("Start [latctl.sh "+command+" "+serverType+"]");
+		log.debug("Start [latctl.sh "+command+" "+serverType+"]");
 
 		InstallerServerType installerServerType = null;
 		InstallerCommandType installerCommandType = null;

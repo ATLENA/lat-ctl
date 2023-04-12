@@ -14,35 +14,31 @@
 
 package io.lat.ctl.util;
 
-import java.util.ArrayList;
-import java.util.List;
+import io.lat.ctl.common.vo.Server;
+import io.lat.ctl.exception.LatException;
+import io.lat.ctl.resolver.XpathVariable;
+import io.lat.ctl.type.InstallerServerType;
+import lombok.extern.slf4j.Slf4j;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import io.lat.ctl.common.vo.Server;
-import io.lat.ctl.exception.LatException;
-import io.lat.ctl.installer.LatApacheCreateInstaller;
-import io.lat.ctl.resolver.XpathVariable;
-import io.lat.ctl.type.InstallerServerType;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Install info utilities.
  *
  * @author Pinepond
  */
+
+@Slf4j
 public class InstallInfoUtil {
-	private static final Logger LOGGER = LoggerFactory.getLogger(InstallInfoUtil.class);
 
 	/**
 	 * Write Server installation information in install-info.xml file.
@@ -77,7 +73,7 @@ public class InstallInfoUtil {
 		}
 		catch (Throwable e) {
 			//throw new LatException("An error occured when saving install-info.xml file", e);
-			LOGGER.error("An error occured when saving install-info.xml file.\n"+e.getMessage());
+			log.error("An error occured when saving install-info.xml file.\n"+e.getMessage());
 		}
 	}
 	

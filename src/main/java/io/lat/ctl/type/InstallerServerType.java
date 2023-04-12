@@ -14,17 +14,16 @@
 
 package io.lat.ctl.type;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Erick Yu
  *
  */
+
+@Slf4j
 public enum InstallerServerType {
 	APACHE("apache"), TOMCAT("tomcat"), COMET("comet"), NGINX("nginx");
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(InstallerServerType.class);
 
 	private String serverType;
 
@@ -49,7 +48,7 @@ public enum InstallerServerType {
 			type = InstallerServerType.valueOf(serverType.replace("-", "_").toUpperCase());
 		}
 		catch (Exception e) {
-			LOGGER.error("Fail in getting install server type");
+			log.error("Fail in getting install server type");
 		}
 		return type;
 	}

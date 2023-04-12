@@ -21,8 +21,7 @@ import io.lat.ctl.util.EnvUtil;
 import io.lat.ctl.util.FileUtil;
 import io.lat.ctl.util.PropertyUtil;
 import io.lat.ctl.util.StringUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -34,9 +33,9 @@ import java.util.Scanner;
  * @author ksseo
  *
  */
-public class LatCometCreateInstaller extends LatInstaller {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(LatCometCreateInstaller.class);
+@Slf4j
+public class LatCometCreateInstaller extends LatInstaller {
 
 	public LatCometCreateInstaller(InstallerCommandType installerCommandType, InstallerServerType installerServerType) {
 		super(installerCommandType, installerServerType);
@@ -60,28 +59,28 @@ public class LatCometCreateInstaller extends LatInstaller {
 			String logHome = getParameterValue(commandMap.get("LOG_HOME"), FileUtil.getConcatPath(targetPath, "logs"));
 	
 			if(FileUtil.exists(targetPath)){
-				//LOGGER.error("["+targetPath+"] directory already exists. Remove the directory and try again.");
+				//log.error("["+targetPath+"] directory already exists. Remove the directory and try again.");
 				throw new LatException("["+targetPath+"] directory already exists. Remove the directory and try again.");
 			}
 			// validate options
 			if (!StringUtil.isNumeric(servicePort)) {
-				//LOGGER.error("Service Port should be numeric. : "+servicePort);
+				//log.error("Service Port should be numeric. : "+servicePort);
 				throw new LatException("Service Port should be numeric.");
 			}
 			if (!StringUtil.isNumeric(secondaryServicePort)) {
-				//LOGGER.error("Service Port should be numeric. : "+secondaryServicePort);
+				//log.error("Service Port should be numeric. : "+secondaryServicePort);
 				throw new LatException("Service Port should be numeric.");
 			}
 	
 			// installPath check
 			if (FileUtil.exists(targetPath)) {
-				//LOGGER.error(targetPath + " already exists.");
+				//log.error(targetPath + " already exists.");
 				throw new LatException(targetPath + " already exists.");
 			}
 	
 			// run user check
 			if ("root".equals(runUser) && !EnvUtil.isRootUserAllowed()) {
-				//LOGGER.error(getServerType() + " can't run as root user.");
+				//log.error(getServerType() + " can't run as root user.");
 				throw new LatException(getServerType() + " can't run as root user.");
 			}
 	
@@ -104,7 +103,7 @@ public class LatCometCreateInstaller extends LatInstaller {
 			// update install-info.xml
 			addInstallInfo(instanceId, servicePort, targetPath);
 		}catch(Throwable e) {
-			LOGGER.error(e.getMessage());
+			log.error(e.getMessage());
 		}
 
 	}
