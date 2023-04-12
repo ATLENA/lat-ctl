@@ -15,6 +15,7 @@
 package io.lat.ctl.util;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -290,5 +291,76 @@ public class InstallInfoUtil {
 		server.setHotfix(XmlUtil.getValueByTagName(serverElement, "hotfix"));
 		
 		return server;
+	}
+
+	/**
+	 * 서버타입에 해당하는 서버의 리스트를 가져온다.
+	 * @param serverType 서버타입
+	 * @return 서버리스트
+	 */
+	public static List<Server> getServerList(String serverType){
+		List<Server> serverList = null;
+		String argoInstallFilePath = getInstallInfoFilePath();
+
+		Document document = XmlUtil.createDocument(argoInstallFilePath);
+		XPath xpath = XPathFactory.newInstance().newXPath();
+		try {
+			NodeList nodeList = (NodeList)XmlUtil.xpathEvaluate("//install/servers/server[type=$type]", document, XPathConstants.NODESET, xpath, new XpathVariable("type", serverType));
+			serverList = getServerList(nodeList);
+		} catch (Throwable e) {
+			throw new LatException("An error occured when reading install-info.xml file", e);
+		}
+
+		return serverList;
+	}
+
+	/**
+	 * 서버타입에 해당하는 서버의 리스트를 가져온다.
+	 * @param serverTypes 서버타입
+	 * @return 서버리스트
+	 */
+	public static List<Server> getServerList(String serverTypes[]){
+		List<Server> list = new ArrayList<Server>();
+		for(String serverType : serverTypes){
+			list.addAll(getServerList(serverType));
+		}
+
+		return list;
+	}
+	/**
+	 * 전체 서버의 리스트를 가져온다.
+	 * @return 서버리스트
+	 */
+	public static List<Server> getAllServerList(){
+		List<Server> serverList = null;
+		String argoInstallFilePath = getInstallInfoFilePath();
+
+		Document document = XmlUtil.createDocument(argoInstallFilePath);
+		XPath xpath = XPathFactory.newInstance().newXPath();
+		try {
+			NodeList nodeList = (NodeList)XmlUtil.xpathEvaluate("//install/servers/server", document, XPathConstants.NODESET, xpath);
+
+			serverList = getServerList(nodeList);
+		} catch (Throwable e) {
+			throw new LatException("An error occured when reading install-info.xml file", e);
+		}
+
+		return serverList;
+	}
+
+	/**
+	 * Server객체의 List를 가져온다.
+	 * @param serverNodeList
+	 * @return
+	 */
+	private static List<Server> getServerList(NodeList serverNodeList){
+		List<Server> serverList = new ArrayList<Server>();
+
+		for(int i=0; serverNodeList !=null && i<serverNodeList.getLength(); i++){
+			Element element = (Element)serverNodeList.item(i);
+			serverList.add(getServerByElement(element));
+		}
+
+		return serverList;
 	}
 }
